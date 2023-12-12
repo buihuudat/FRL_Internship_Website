@@ -4,24 +4,28 @@ import CurrencyExchangeIcon from "@mui/icons-material/CurrencyExchange";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import ApartmentIcon from "@mui/icons-material/Apartment";
 import AccessAlarmIcon from "@mui/icons-material/AccessAlarm";
+import { useDispatch } from "react-redux";
+import { showModal } from "../slice/jobSlice";
 
+const Skill = () => {
+  return (
+    <Typography
+      sx={{
+        px: 1,
+        borderRadius: 20,
+        width: "max-content",
+        border: "1px solid #000",
+      }}
+    >
+      Tester
+    </Typography>
+  );
+};
 const JobDetails = () => {
-  const Skill = () => {
-    return (
-      <Typography
-        sx={{
-          px: 1,
-          borderRadius: 20,
-          width: "max-content",
-          border: "1px solid #000",
-        }}
-      >
-        Tester
-      </Typography>
-    );
+  const dispatch = useDispatch();
+  const handleApply = () => {
+    dispatch(showModal({ show: true }));
   };
-
-  const handleApply = () => {};
   return (
     <Box
       sx={{

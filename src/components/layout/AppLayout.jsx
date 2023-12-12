@@ -1,13 +1,28 @@
-import { Box } from "@mui/material";
+import { Box, LinearProgress } from "@mui/material";
 import { Outlet } from "react-router-dom";
 import Navbar from "../navbar/Navbar";
 import Footer from "../footer/Footer";
-import { useGetUserQuery } from "../../api/user/userApi";
+import { useDispatch } from "react-redux";
+import { setUser } from "../../slice/userSlice";
 import { useEffect } from "react";
-import toast from "react-hot-toast";
+import { useCheckAuthMutation } from "../../api/user/userApi";
 
 const AppLayout = () => {
-  return (
+  const [checkAuth, { isLoading }] = useCheckAuthMutation();
+  const dispatch = useDispatch();
+  const checkUser = async () => {
+    const result = await checkAuth();
+    if (result.data?.user) {
+      dispatch(setUser(result.data.user));
+    }
+  };
+
+  useEffect(() => {
+    checkUser();
+  }, []);
+  return isLoading ? (
+    <LinearProgress />
+  ) : (
     <Box
       sx={{
         background: `linear-gradient(to right, black, #540509)`,

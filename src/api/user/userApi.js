@@ -4,23 +4,21 @@ export const userApi = createApi({
   reducerPath: "userApi",
   baseQuery: fetchBaseQuery({
     baseUrl: "http://localhost:5000/api/v1/user",
-
-    prepareHeaders: (headers, { getState }) => {
-      const token = getState().user.token;
+    prepareHeaders: async (headers, { getState }) => {
+      const token = sessionStorage.getItem("token");
       if (token) {
-        console.log(token);
         headers.set("Authorization", `Bearer ${token}`);
       }
     },
   }),
   endpoints: (builder) => ({
-    getUser: builder.query({
-      query: (username) => ({
-        url: `/get-user/${username}`,
-        method: "GET",
+    checkAuth: builder.mutation({
+      query: () => ({
+        url: "/check-auth",
+        method: "POST",
       }),
     }),
   }),
 });
 
-export const { useGetUserQuery } = userApi;
+export const { useCheckAuthMutation } = userApi;

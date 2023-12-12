@@ -2,9 +2,12 @@ import { useState } from "react";
 import Filter from "../../components/home/Filter";
 import { Box, Typography } from "@mui/material";
 import FilterData from "../../components/home/FilterData";
+import ApplyModal from "../../components/ApplyModal";
+import NotificationModal from "../../components/NotificationModal";
 
 const Home = () => {
   const [jobs, setJobs] = useState([]);
+
   return (
     <Box>
       <Filter />
@@ -91,6 +94,8 @@ const Home = () => {
           </Box>
         </Box>
       )}
+      <ApplyModal />
+      <NotificationModal />
     </Box>
   );
 };

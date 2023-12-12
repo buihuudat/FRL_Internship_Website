@@ -10,7 +10,8 @@ import {
 import { useState } from "react";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { setUser } from "../../slice/userSlice";
 
 const Navbar = () => {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -29,6 +30,14 @@ const Navbar = () => {
   const viewProfile = () => {
     navigate("/tai-khoan");
     handleClose();
+  };
+
+  const dispatch = useDispatch();
+  const handleLogout = () => {
+    sessionStorage.removeItem("token");
+    localStorage.removeItem("user");
+    dispatch(setUser(null));
+    navigate("/");
   };
 
   return (
@@ -71,7 +80,7 @@ const Navbar = () => {
               onClick={handleClick}
               sx={{ color: "white" }}
             >
-              Dinh Linh
+              {user?.username}
             </Button>
             <Menu
               id="basic-menu"
@@ -82,8 +91,9 @@ const Navbar = () => {
                 "aria-labelledby": "basic-button",
               }}
             >
+              {user?.role === "admin" && <MenuItem>Dashboard</MenuItem>}
               <MenuItem onClick={viewProfile}>Tài khoản</MenuItem>
-              <MenuItem onClick={handleClose}>Logout</MenuItem>
+              <MenuItem onClick={handleLogout}>Logout</MenuItem>
             </Menu>
           </Box>
 

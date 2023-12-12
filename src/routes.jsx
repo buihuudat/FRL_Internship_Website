@@ -31,7 +31,7 @@ export const router = createBrowserRouter([
     element: <AuthLayout />,
     children: [
       {
-        path: "/tai-khoa n",
+        path: "/tai-khoan",
         element: <Profile />,
       },
     ],
