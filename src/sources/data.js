@@ -1,50 +1,78 @@
 export const data = {
   salary: [
     {
-      s: "Thỏa thuận",
+      value: "Thỏa thuận",
     },
     {
-      s: "Từ 0 - 1.000.000 đ",
+      value: "Từ 0 - 1.000.000 đ",
     },
     {
-      s: "Từ 1.000.000 đ - 2.000.000 đ",
+      value: "Từ 1.000.000 đ - 2.000.000 đ",
     },
     {
-      s: "Từ 2.000.000 đ - 3.000.000 đ",
+      value: "Từ 2.000.000 đ - 3.000.000 đ",
     },
     {
-      s: "Từ 4.000.000 đ - 5.000.000 đ",
+      value: "Từ 4.000.000 đ - 5.000.000 đ",
     },
     {
-      s: "Trên 5.000.000 đ",
+      value: "Trên 5.000.000 đ",
     },
   ],
   scale: [
     {
-      s: "Dưới 1km",
+      value: "Dưới 1km",
     },
     {
-      s: "Từ 1km - 2km",
+      value: "Từ 1km - 2km",
     },
     {
-      s: "Từ 2km - 3km",
+      value: "Từ 2km - 3km",
     },
     {
-      s: "Từ 3km - 4km",
+      value: "Từ 3km - 4km",
     },
     {
-      s: "Từ 5km - 10km",
+      value: "Từ 5km - 10km",
     },
   ],
   workForm: [
     {
-      w: "Online",
+      value: "Online",
     },
     {
-      w: "Tại văn phòng",
+      value: "Tại văn phòng",
     },
     {
-      w: "Cả hai",
+      value: "Cả hai",
     },
   ],
+  jobExperience: [
+    {
+      value: "Không yêu cầu kinh nghiệm",
+    },
+    {
+      value: "0 - 1 năm",
+    },
+    {
+      value: "1 - 2 năm",
+    },
+    {
+      value: "2 - 3 năm",
+    },
+    {
+      value: "3 - 4 năm",
+    },
+    {
+      value: "4 - 5 năm",
+    },
+    {
+      value: "5 - 10 năm",
+    },
+    {
+      value: "Trên 10 năm",
+    },
+  ],
+
+  time: [{ value: "Toàn thời gian" }, { value: "Bán thời gian" }],
 };

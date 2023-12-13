@@ -1,7 +1,7 @@
 import { Outlet, useNavigate } from "react-router-dom";
 import Navbar from "../navbar/Navbar";
 import Footer from "../footer/Footer";
-import { Box, CircularProgress, LinearProgress } from "@mui/material";
+import { Box, LinearProgress } from "@mui/material";
 import { useEffect } from "react";
 import { useCheckAuthMutation } from "../../api/user/userApi";
 import { useDispatch } from "react-redux";
@@ -34,7 +34,9 @@ const AuthLayout = () => {
       }}
     >
       <Navbar />
-      <Outlet />
+      <Box pt={10}>
+        <Outlet />
+      </Box>
       <Footer />
     </Box>
   );

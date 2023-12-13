@@ -6,15 +6,23 @@ import {
   Menu,
   MenuItem,
   IconButton,
+  Typography,
+  Badge,
+  Paper,
+  Divider,
 } from "@mui/material";
 import { useState } from "react";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { setUser } from "../../slice/userSlice";
+import { faker } from "@faker-js/faker";
+import moment from "moment";
+import CloseIcon from "@mui/icons-material/Close";
 
 const Navbar = () => {
   const [anchorEl, setAnchorEl] = useState(null);
+  const [showNoti, setShowNoti] = useState(false);
   const open = Boolean(anchorEl);
   const user = useSelector((state) => state.user.user);
 
@@ -48,6 +56,10 @@ const Navbar = () => {
         justifyContent: "space-between",
         p: 2,
         px: 10,
+        position: "fixed",
+        background: `linear-gradient(to right, black, #540509)`,
+        width: "100%",
+        zIndex: 1000,
       }}
     >
       <Link
@@ -71,7 +83,7 @@ const Navbar = () => {
             gap: 1,
           }}
         >
-          <Avatar />
+          <Avatar src={user?.avatar} alt="avt-user" />
           <Box sx={{ mr: 10 }}>
             <Button
               aria-controls={open ? "basic-menu" : undefined}
@@ -101,8 +113,10 @@ const Navbar = () => {
             </Menu>
           </Box>
 
-          <IconButton>
-            <NotificationsIcon sx={{ color: "white" }} />
+          <IconButton onClick={() => setShowNoti(true)}>
+            <Badge badgeContent={3} color="error">
+              <NotificationsIcon sx={{ color: "white" }} />
+            </Badge>
           </IconButton>
         </Box>
       ) : (
@@ -130,8 +144,87 @@ const Navbar = () => {
           </Button>
         </Box>
       )}
+      {showNoti && (
+        <Paper
+          onClose={handleClose}
+          open={true}
+          sx={{
+            top: 70,
+            right: 0,
+            position: "absolute",
+            zIndex: 10,
+            backgroundColor: "white",
+            padding: 2,
+            borderRadius: 2,
+          }}
+        >
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
+            <Typography fontWeight={600} fontSize={18}>
+              Thông báo
+            </Typography>
+            <IconButton onClick={() => setShowNoti(false)}>
+              <CloseIcon />
+            </IconButton>
+          </Box>
+          <Divider />
+          <Box
+            sx={{
+              maxHeight: 500,
+              overflow: "auto",
+            }}
+          >
+            {fakeDataNoti.map((data) => (
+              <Box key={data._id}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    gap: 4,
+                  }}
+                >
+                  <Typography fontWeight={600}>{data.title}</Typography>
+                  <Typography fontWeight={600}>
+                    {moment(data.date).format("l")}
+                  </Typography>
+                </Box>
+                <Typography>{data.company}</Typography>
+                <Typography>Chúng tôi đã gửi CV đến doanh nghiệp</Typography>
+                <Typography color={"red"} fontSize={13}>
+                  Vui lòng chờ phản hồi phía doanh nghiệp qua email đã đăng kí
+                </Typography>
+                <Divider />
+              </Box>
+            ))}
+          </Box>
+        </Paper>
+      )}
     </Box>
   );
 };
 
 export default Navbar;
+
+const fakeDataNoti = [
+  {
+    _id: faker.datatype.uuid(),
+    title: "Ứng tuyển thành công",
+    content: faker.lorem.paragraph(),
+    date: faker.date.recent(),
+    company: "ten cong ty",
+  },
+  {
+    _id: faker.datatype.uuid(),
+    title: "Ứng tuyển thành công",
+    content: faker.lorem.paragraph(),
+    date: faker.date.recent(),
+    company: "ten cong ty",
+  },
+];

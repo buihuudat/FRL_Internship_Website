@@ -5,7 +5,7 @@ export const adminApi = createApi({
   reducerPath: "adminApi",
   baseQuery: fetchBaseQuery({
     // baseUrl: "http://localhost:5000/api/v1/admin",
-    baseUrl: "https://internship-gpdp.onrender.com/api/v1/admin",
+    // baseUrl: "https://internship-gpdp.onrender.com/api/v1/admin",
     prepareHeaders: async (headers) => {
       const token = sessionStorage.getItem("token");
       if (token) {
@@ -23,6 +23,21 @@ export const adminApi = createApi({
     }),
     getCompany: builder.query({
       query: () => "/company",
+    }),
+
+    createJob: builder.mutation({
+      query: (job) => ({
+        url: "/jobs",
+        method: "POST",
+        body: job,
+      }),
+    }),
+    createCompany: builder.mutation({
+      query: (job) => ({
+        url: "/jobs",
+        method: "POST",
+        body: job,
+      }),
     }),
   }),
 });

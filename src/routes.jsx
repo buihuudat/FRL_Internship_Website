@@ -9,6 +9,7 @@ import AdminLayout from "./components/layout/AdminLayout";
 import Users from "./pages/admin/Users";
 import Jobs from "./pages/admin/Jobs";
 import Company from "./pages/admin/Company";
+import CompanyPage from "./pages/Company";
 
 export const router = createBrowserRouter([
   {
@@ -19,6 +20,11 @@ export const router = createBrowserRouter([
         path: "/",
         index: true,
         element: <Home />,
+      },
+      {
+        path: "/company",
+        index: true,
+        element: <CompanyPage />,
       },
       {
         path: "/dang-nhap",

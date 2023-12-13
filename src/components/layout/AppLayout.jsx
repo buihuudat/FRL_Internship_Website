@@ -32,7 +32,9 @@ const AppLayout = () => {
       }}
     >
       <Navbar />
-      <Outlet />
+      <Box pt={10}>
+        <Outlet />
+      </Box>
       <Footer />
     </Box>
   );

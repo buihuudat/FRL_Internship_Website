@@ -17,12 +17,17 @@ import {
   Typography,
 } from "@mui/material";
 import { data } from "../sources/data";
+import toast from "react-hot-toast";
+import { useGetCompanyQuery } from "../api/admin/adminApi";
 
 const JobModal = () => {
   const [value, setValue] = useState(0);
   const [form, setForm] = useState("Online");
   const [salary, setSalary] = useState("Thỏa thuận");
   const [scale, setScale] = useState("Dưới 1km");
+  const [ot, setOt] = useState(0);
+  const [kn, setKn] = useState("Không yêu cầu kinh nghiệm");
+  const [company, setCompany] = useState(undefined);
 
   const dispatch = useDispatch();
   const handleClose = () => {
@@ -30,6 +35,7 @@ const JobModal = () => {
   };
 
   const open = useSelector((state) => state.job.createModal.show);
+  const companyData = useGetCompanyQuery();
 
   const style = {
     position: "absolute",
@@ -50,33 +56,52 @@ const JobModal = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const formData = new FormData(e.targer);
+    const formData = new FormData(e.target);
     const data = {
-      name: formData.get("name"),
-      email: formData.get("email"),
-      phone: formData.get("phone"),
-      address: formData.get("address"),
-      city: formData.get("city"),
-      state: formData.get("state"),
-      country: formData.get("country"),
-      website: formData.get("website"),
-      description: formData.get("description"),
-      ot: value,
+      jobtitle: formData.get("jobTitle"),
+      jobdescription: formData.get("jobDescription"),
+      jobSkills: formData.get("jobSkills"),
+      jobLocation: formData.get("jobLocation"),
+      wotkingForm: form,
+      jobExperience: kn,
+      salary,
+      scale,
+      jobStatus: !value ? "Active" : "No active",
+      ot: !ot ? "Có tăng ca" : "Không tăng ca",
     };
+
+    if (data.jobtitle.length < 10)
+      return toast.error("Tên công việc không hợp lệ");
+    if (data.jobdescription.length < 10)
+      return toast.error("Mô tả công việc không hợp lệ");
+    if (data.jobLocation.length < 10)
+      return toast.error("Địa điểm làm việc không hợp lệ");
+
+    console.log(data);
   };
 
   return (
     <div>
-      <Modal
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
+      <Modal open={open} onClose={handleClose}>
         <Box sx={style} component={"form"} onSubmit={handleSubmit}>
           <Typography fontWeight={600} fontSize={25} align="center">
             Thêm công việc mới
           </Typography>
+
+          <FormControl fullWidth>
+            <InputLabel>Công ty</InputLabel>
+            <Select
+              value={company}
+              label="Công ty"
+              onChange={(e) => setCompany(e.target.value)}
+            >
+              {companyData.data.map((data, i) => (
+                <MenuItem value={data.w} key={i}>
+                  {data.w}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
 
           <TextField label="Tên công việc" name="jobTitle" fullWidth required />
           <TextField
@@ -87,22 +112,21 @@ const JobModal = () => {
             required
             rows={3}
           />
-          <TextField label="Lương" name="salary" required />
           <TextField label="Địa điểm làm việc" name="jobLocation" required />
-          <TextField label="Kinh nghiệm cần có" name="jobExperience" required />
+
           <TextField
             label="Kỹ năng cần có"
             name="jobSkills"
-            placeholder="React, Node, PHP"
+            placeholder="React, Node, PHP, ..."
             required
           />
 
-          <Box sx={{ display: "flex", gap: 3 }}>
+          <Box sx={{ display: "flex", gap: 3, flexWrap: "wrap" }}>
             <FormControl>
               <FormLabel>Status</FormLabel>
               <RadioGroup
                 value={value}
-                onChange={(e) => setValue(e.target.value)}
+                onChange={(e) => setValue(+e.target.value)}
               >
                 <FormControlLabel
                   value={0}
@@ -113,6 +137,21 @@ const JobModal = () => {
                   value={1}
                   control={<Radio />}
                   label="No Active"
+                />
+              </RadioGroup>
+            </FormControl>
+            <FormControl>
+              <FormLabel>Tăng ca</FormLabel>
+              <RadioGroup value={ot} onChange={(e) => setOt(+e.target.value)}>
+                <FormControlLabel
+                  value={0}
+                  control={<Radio />}
+                  label="Cần tăng ca"
+                />
+                <FormControlLabel
+                  value={1}
+                  control={<Radio />}
+                  label="Không tăng ca"
                 />
               </RadioGroup>
             </FormControl>
@@ -135,7 +174,7 @@ const JobModal = () => {
               <Select
                 value={scale}
                 label="Hình thức làm việc"
-                onChange={(e) => setForm(e.target.value)}
+                onChange={(e) => setScale(e.target.value)}
               >
                 {data.scale.map((data, i) => (
                   <MenuItem value={data.s} key={i}>
@@ -149,7 +188,7 @@ const JobModal = () => {
               <Select
                 value={salary}
                 label="Mức lương"
-                onChange={(e) => setForm(e.target.value)}
+                onChange={(e) => setSalary(e.target.value)}
               >
                 {data.salary.map((data, i) => (
                   <MenuItem value={data.s} key={i}>
@@ -158,16 +197,24 @@ const JobModal = () => {
                 ))}
               </Select>
             </FormControl>
+            <FormControl sx={{ width: 250 }}>
+              <InputLabel>Kinh nghiệm làm việc</InputLabel>
+              <Select
+                value={kn}
+                label="Kinh nghiệm làm việc"
+                onChange={(e) => setKn(e.target.value)}
+              >
+                {data.jobExperience.map((data, i) => (
+                  <MenuItem value={data.j} key={i}>
+                    {data.j}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
           </Box>
 
           <Box sx={{ display: "flex", flexDirection: "column", gap: 2, pt: 2 }}>
-            <Button
-              variant="contained"
-              onClick={handleSubmit}
-              color="success"
-              fullWidth
-              type="submit"
-            >
+            <Button variant="contained" color="success" fullWidth type="submit">
               Save
             </Button>
             <Button

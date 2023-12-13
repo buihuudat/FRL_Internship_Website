@@ -9,6 +9,8 @@ import SocialDistanceIcon from "@mui/icons-material/SocialDistance";
 import BorderColorIcon from "@mui/icons-material/BorderColor";
 import { setModal } from "../../slice/userSlice";
 import ProfileModal from "../../components/ProfileModal";
+import moment from "moment";
+
 const Profile = () => {
   const { user } = useSelector((state) => state.user);
 
@@ -99,11 +101,11 @@ const Profile = () => {
             <Box>
               <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                 <PersonIcon />
-                <Typography>{user?.sex}</Typography>
+                <Typography>{user?.gender}</Typography>
               </Box>
               <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                 <CardGiftcardIcon />
-                <Typography>{user?.dateOfBirth}</Typography>
+                <Typography>{moment(user?.birthday).format("l")}</Typography>
               </Box>
               <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                 <SocialDistanceIcon />
@@ -118,7 +120,7 @@ const Profile = () => {
         >
           <Typography fontWeight={600}>Giới thiệu bản thân</Typography>
           <Divider />
-          <Typography>I am best</Typography>
+          <Typography>{user?.description}</Typography>
         </Box>
       </Box>
       <ProfileModal />

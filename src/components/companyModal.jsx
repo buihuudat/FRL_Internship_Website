@@ -45,19 +45,17 @@ const CompanyModal = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const formData = new FormData(e.targer);
+    const formData = new FormData(e.target);
     const data = {
       image,
       name: formData.get("name"),
-      email: formData.get("email"),
-      phone: formData.get("phone"),
       address: formData.get("address"),
-      city: formData.get("city"),
-      state: formData.get("state"),
       country: formData.get("country"),
       website: formData.get("website"),
+      social: formData.get("facebook"),
       description: formData.get("description"),
-      ot: value,
+      scale: formData.get("scale"),
+      ot: value ? "Có tăng ca" : "Không tăng ca",
     };
 
     console.log(data);
@@ -104,15 +102,15 @@ const CompanyModal = () => {
           <Box display={"flex"} gap={3}>
             <TextField label="Quy mô" name="scale" required />
             <TextField label="Quốc gia" name="country" required />
-            <TextField label="Website" name="Link website" required />
-            <TextField label="Facebook" name="Link facebook" required />
+            <TextField label="Website" name="website" required />
+            <TextField label="Facebook" name="facebook" required />
           </Box>
 
           <FormControl>
             <FormLabel>Tăng ca</FormLabel>
             <RadioGroup
               value={value}
-              onChange={(e) => setValue(e.target.value)}
+              onChange={(e) => setValue(+e.target.value)}
             >
               <FormControlLabel
                 value={0}
@@ -128,13 +126,7 @@ const CompanyModal = () => {
           </FormControl>
 
           <Box sx={{ display: "flex", flexDirection: "column", gap: 2, pt: 2 }}>
-            <Button
-              variant="contained"
-              onClick={handleSubmit}
-              color="success"
-              fullWidth
-              type="submit"
-            >
+            <Button variant="contained" color="success" fullWidth type="submit">
               Save
             </Button>
             <Button

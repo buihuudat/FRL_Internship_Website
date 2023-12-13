@@ -17,7 +17,10 @@ const AdminLayout = () => {
 
   const checkAdmin = async () => {
     const result = await checkAuth();
-    if (result.data?.user && result.data.user.role !== "admin") {
+    if (
+      (result.data?.user && result.data.user.role !== "admin") ||
+      result.error
+    ) {
       return navigate("/");
     }
     dispatch(setUser(result.data.user));
@@ -49,7 +52,9 @@ const AdminLayout = () => {
         }}
       >
         <Sider />
-        <Outlet />
+        <Box pt={10}>
+          <Outlet />
+        </Box>
       </Box>
       <Footer />
     </Box>

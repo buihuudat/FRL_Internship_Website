@@ -1,4 +1,11 @@
-import { Avatar, Box, Button, Divider, Typography } from "@mui/material";
+import {
+  Avatar,
+  Box,
+  Button,
+  Divider,
+  IconButton,
+  Typography,
+} from "@mui/material";
 
 import CurrencyExchangeIcon from "@mui/icons-material/CurrencyExchange";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
@@ -6,6 +13,7 @@ import ApartmentIcon from "@mui/icons-material/Apartment";
 import AccessAlarmIcon from "@mui/icons-material/AccessAlarm";
 import { useDispatch } from "react-redux";
 import { showModal } from "../slice/jobSlice";
+import { useNavigate } from "react-router-dom";
 
 const Skill = () => {
   return (
@@ -23,6 +31,7 @@ const Skill = () => {
 };
 const JobDetails = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const handleApply = () => {
     dispatch(showModal({ show: true }));
   };
@@ -38,6 +47,7 @@ const JobDetails = () => {
     >
       <Box sx={{ display: "flex", flexDirection: "row" }}>
         <Avatar
+          onClick={() => navigate("/company")}
           variant="square"
           alt="img-company"
           sx={{ width: 100, height: 100 }}

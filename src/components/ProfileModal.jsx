@@ -3,7 +3,7 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import { useDispatch, useSelector } from "react-redux";
-import { setModal } from "../slice/userSlice";
+import { setModal, setUser } from "../slice/userSlice";
 import {
   Avatar,
   Divider,
@@ -16,6 +16,12 @@ import {
 import CameraAltIcon from "@mui/icons-material/CameraAlt";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useState } from "react";
+import FileBase64 from "react-file-base64";
+import toast from "react-hot-toast";
+import { LoadingButton } from "@mui/lab";
+
+import { useUpdateUserMutation } from "../api/user/userApi";
+import moment from "moment";
 const style = {
   position: "absolute",
   top: "50%",
@@ -30,9 +36,13 @@ const style = {
 
 const ProfileModal = () => {
   const { user } = useSelector((state) => state.user);
-  const [gender, setGender] = useState(user?.sex);
+
+  const [avatar, setAvatar] = useState(user?.avatar);
+  const [gender, setGender] = useState(user?.gender);
+
   const dispatch = useDispatch();
 
+  const [updateUser, { isLoading }] = useUpdateUserMutation();
   const open = useSelector((state) => state.user.modal.show);
 
   const handleClose = () => {
@@ -47,6 +57,46 @@ const ProfileModal = () => {
     }
   };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const data = {
+      username: user.username,
+      name: formData.get("name"),
+      email: formData.get("email"),
+      phone: formData.get("phone"),
+      address: formData.get("address"),
+      birthday: formData.get("birthday"),
+      description: formData.get("description"),
+      social: formData.get("social"),
+      avatar: avatar,
+      gender: gender,
+    };
+
+    if (data.name.length < 6) return toast.error("Tên không hợp lệ");
+    if (data.email.length < 6) return toast.error("Email không hợp lệ");
+    if (data.phone.length < 10 || data.phone.length > 11)
+      return toast.error("Số điện thoại không hợp lệ");
+    if (data.phone.length < 10) return toast.error("Địa chỉ không hợp lệ");
+
+    const result = await updateUser(data);
+    if (result.data?.user) {
+      dispatch(setUser(result.data.user));
+      toast.success("Cập nhật thành công");
+      handleClose();
+    }
+  };
+
+  const handleChangeAvatar = (e) => {
+    console.log(e);
+    if (e.type !== "image/png") return toast.error("Ảnh không hợp lệ");
+    setAvatar(e.base64);
+  };
+
+  const formattedBirthday = user
+    ? moment(user.birthday).format("YYYY-MM-DD")
+    : "";
+
   return (
     <div>
       <Modal
@@ -55,7 +105,7 @@ const ProfileModal = () => {
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <Box sx={style}>
+        <Box sx={style} component={"form"} onSubmit={handleSubmit}>
           <Typography fontSize={25} fontWeight={600}>
             Thông tin cá nhân
           </Typography>
@@ -69,12 +119,12 @@ const ProfileModal = () => {
             }}
           >
             <Avatar
-              src={user?.avatar}
+              src={avatar}
               alt="avt-user"
               sx={{ width: 100, height: 100 }}
             />
             <Box sx={{ display: "flex", flexDirection: "row" }}>
-              <Button
+              {/* <Button
                 variant="text"
                 sx={{ display: "flex", flexDirection: "row" }}
               >
@@ -82,78 +132,106 @@ const ProfileModal = () => {
                 <Typography color={"red"} fontWeight={600}>
                   Chỉnh sửa
                 </Typography>
-              </Button>
-              <Button
+              </Button> */}
+              <FileBase64 onDone={handleChangeAvatar} />
+              {/* <Button
                 variant="text"
                 sx={{ display: "flex", flexDirection: "row" }}
               >
                 <DeleteIcon />
                 <Typography fontWeight={600}>Xóa</Typography>
-              </Button>
+              </Button> */}
             </Box>
           </Box>
 
-          <Box>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              flexWrap: "wrap",
+              gap: 2,
+              justifyContent: "space-between",
+            }}
+          >
             <TextField
               label="Họ và tên"
               required
-              defaultChecked={user?.name}
+              defaultValue={user?.name}
+              name="name"
               fullWidth
             />
             <TextField
               label="Địa chỉ email"
               required
-              defaultChecked={user?.email}
+              name="email"
+              type="email"
+              defaultValue={user?.email}
               sx={{ width: "45%" }}
             />
             <TextField
               label="Số điện thoại"
               required
-              defaultChecked={user?.phone}
+              name="phone"
+              defaultValue={user?.phone}
               sx={{ width: "45%" }}
             />
             <TextField
               label="Ngày sinh"
               required
-              defaultChecked={user?.dayOfBirth}
+              name="birthday"
+              type="date"
+              defaultValue={formattedBirthday}
               sx={{ width: "45%" }}
             />
             <FormControl sx={{ width: "45%" }}>
-              <InputLabel id="demo-simple-select-label">Giới tính</InputLabel>
+              <InputLabel>Giới tính</InputLabel>
               <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
                 defaultValue={gender}
                 label="Giới tính"
                 onChange={handleChangeGender}
               >
-                <MenuItem value={10}>Ten</MenuItem>
+                <MenuItem value={"male"}>Nam</MenuItem>
+                <MenuItem value={"female"}>Nữ</MenuItem>
+                <MenuItem value={"other"}>Khác</MenuItem>
               </Select>
             </FormControl>
             <TextField
-              label="Ngày sinh"
+              label="Địa chỉ"
               required
-              defaultChecked={user?.dayOfBirth}
+              name="address"
+              defaultValue={user?.address}
               sx={{ width: "45%" }}
             />
             <TextField
-              label="Ngày sinh"
+              label="Link cá nhân"
               required
-              defaultChecked={user?.dayOfBirth}
+              name="social"
+              defaultValue={user?.dayOfBirth}
               sx={{ width: "45%" }}
             />
-            <Box>
-              <Typography fontWeight={600}>Giới thiệu bản thân</Typography>
-              <Divider />
-              <TextField
-                label="Ngày sinh"
-                multiline
-                rows={2}
-                defaultChecked={user?.dayOfBirth}
-                fullWidth
-              />
-            </Box>
           </Box>
+          <Box>
+            <Typography fontWeight={600}>Giới thiệu bản thân</Typography>
+            <Divider />
+            <TextField
+              multiline
+              rows={2}
+              name="description"
+              defaultValue={user?.description}
+              fullWidth
+            />
+          </Box>
+
+          <LoadingButton
+            loading={isLoading}
+            fullWidth
+            variant="contained"
+            sx={{ mt: 1 }}
+            type="submit"
+            color="error"
+          >
+            Cập nhật
+          </LoadingButton>
         </Box>
       </Modal>
     </div>

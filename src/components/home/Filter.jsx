@@ -10,28 +10,24 @@ import {
 } from "@mui/material";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import { useState } from "react";
+import { data } from "../../sources/data";
 
 const Filter = () => {
-  const [salary, setSalary] = useState(null);
-
-  const handleChange = (event) => {
-    setSalary(event.target.value);
-  };
-
   const SelectActions = ({ name, data = [] }) => {
+    const [value, setValue] = useState(null);
     return (
       <FormControl sx={{ background: "white", width: "30%", borderRadius: 2 }}>
         <InputLabel>{name}</InputLabel>
         <Select
           labelId="demo-simple-select-label"
           id="demo-simple-select"
-          value={salary}
+          value={value}
           label={name}
-          onChange={handleChange}
+          onChange={(e) => setValue(e.target.value)}
         >
           {data.map((v, i) => (
-            <MenuItem value={1} key={i}>
-              1
+            <MenuItem value={v.value} key={i}>
+              {v.value}
             </MenuItem>
           ))}
         </Select>
@@ -81,10 +77,10 @@ const Filter = () => {
           placeholder="Nhập từ khóa kỹ năng, công ty,..."
           sx={{ width: "63%", backgroundColor: "white", borderRadius: 2 }}
         />
-        <SelectActions name="Mức lương" data={[]} />
-        <SelectActions name="Khoảng cách" data={[]} />
-        <SelectActions name="Hình thức làm việc" data={[]} />
-        <SelectActions name="Thời gian" data={[]} />
+        <SelectActions name="Mức lương" data={data.salary} />
+        <SelectActions name="Khoảng cách" data={data.scale} />
+        <SelectActions name="Hình thức làm việc" data={data.workForm} />
+        <SelectActions name="Thời gian" data={data.time} />
       </Box>
       <Button
         sx={{
