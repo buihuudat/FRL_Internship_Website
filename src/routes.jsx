@@ -5,6 +5,10 @@ import AuthLayout from "./components/layout/AuthLayout";
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 import Profile from "./pages/Profile";
+import AdminLayout from "./components/layout/AdminLayout";
+import Users from "./pages/admin/Users";
+import Jobs from "./pages/admin/Jobs";
+import Company from "./pages/admin/Company";
 
 export const router = createBrowserRouter([
   {
@@ -33,6 +37,24 @@ export const router = createBrowserRouter([
       {
         path: "/tai-khoan",
         element: <Profile />,
+      },
+    ],
+  },
+  {
+    path: "/",
+    element: <AdminLayout />,
+    children: [
+      {
+        path: "/admin/users",
+        element: <Users />,
+      },
+      {
+        path: "/admin/jobs",
+        element: <Jobs />,
+      },
+      {
+        path: "/admin/company",
+        element: <Company />,
       },
     ],
   },

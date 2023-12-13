@@ -41,7 +41,10 @@ const Login = () => {
     }
     if (result.data && result.data.message) {
       toast.success(result.data.message);
-      sessionStorage.setItem("token", result.data.token);
+      (checked ? localStorage : sessionStorage).setItem(
+        "token",
+        result.data.token
+      );
       localStorage.setItem("token", result.data.user);
       dispatch(setUser(result.data.user));
       navigate("/");

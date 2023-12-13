@@ -91,7 +91,11 @@ const Navbar = () => {
                 "aria-labelledby": "basic-button",
               }}
             >
-              {user?.role === "admin" && <MenuItem>Dashboard</MenuItem>}
+              {user?.role === "admin" && (
+                <MenuItem onClick={() => navigate("admin/jobs")}>
+                  Dashboard
+                </MenuItem>
+              )}
               <MenuItem onClick={viewProfile}>Tài khoản</MenuItem>
               <MenuItem onClick={handleLogout}>Logout</MenuItem>
             </Menu>
