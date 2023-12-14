@@ -1,16 +1,9 @@
-import {
-  Box,
-  LinearProgress,
-  Paper,
-  SpeedDial,
-  SpeedDialIcon,
-} from "@mui/material";
-import { useGetCompanyQuery } from "../../api/admin/adminApi";
+import { Box, LinearProgress, SpeedDial, SpeedDialIcon } from "@mui/material";
+import { useGetCompanyQuery, useGetJobsQuery } from "../../api/admin/adminApi";
 import { useDispatch } from "react-redux";
 import { setCreateModal } from "../../slice/jobSlice";
 import JobModal from "../../components/JobModal";
-
-const JobItem = () => <Paper>123</Paper>;
+import JobItem from "../../components/JobItem";
 
 const Popup = () => {
   const dispatch = useDispatch();
@@ -37,15 +30,16 @@ const Popup = () => {
 };
 
 const Jobs = () => {
-  const { data, isLoading } = useGetCompanyQuery();
+  const { data, isLoading } = useGetJobsQuery();
+
   return isLoading ? (
     <LinearProgress />
   ) : (
-    <Box>
-      {data.map((job) => (
-        <JobItem key={job._id} />
-      ))}
-
+    <Box
+      p={3}
+      sx={{ display: "flex", flexDirection: "row", gap: 3, flexGrow: 1 }}
+    >
+      {!isLoading && data?.map((job) => <JobItem key={job._id} {...job} />)}
       <Popup />
     </Box>
   );

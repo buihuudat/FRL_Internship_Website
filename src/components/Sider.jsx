@@ -21,15 +21,16 @@ const Sider = () => {
       href: "/admin/jobs",
     },
     {
-      title: "Người dùng",
-      icon: <PeopleIcon />,
-      href: "/admin/users",
-    },
-    {
       title: "Công ty",
       icon: <WorkIcon />,
       href: "/admin/company",
     },
+    {
+      title: "Người dùng",
+      icon: <PeopleIcon />,
+      href: "/admin/users",
+    },
+
     // {
     //   title: "Mức lương",
     //   icon: <AttachMoneyIcon />,

@@ -13,9 +13,8 @@ const AuthLayout = () => {
   const dispatch = useDispatch();
 
   const checkUser = async () => {
-    const token = sessionStorage.getItem("token");
-    if (!token) return navigate("/");
     const result = await checkAuth();
+    if (!result.data) return navigate("/");
     dispatch(setUser(result.data.user));
   };
 

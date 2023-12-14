@@ -35,17 +35,12 @@ const Login = () => {
     };
 
     const result = await login(data);
-    console.log(result);
     if (result.error && result.error.data) {
       toast.error(result.error?.data?.message);
     }
     if (result.data && result.data.message) {
       toast.success(result.data.message);
-      (checked ? localStorage : sessionStorage).setItem(
-        "token",
-        result.data.token
-      );
-      localStorage.setItem("token", result.data.user);
+      localStorage.setItem("token", result.data.token);
       dispatch(setUser(result.data.user));
       navigate("/");
     }

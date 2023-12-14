@@ -6,18 +6,20 @@ export const userApi = createApi({
     baseUrl: "https://internship-gpdp.onrender.com/api/v1/user",
     // baseUrl: "http://localhost:5000/api/v1/user",
     prepareHeaders: async (headers) => {
-      const token = sessionStorage.getItem("token");
+      const token = localStorage.getItem("token");
       if (token) {
         headers.set("Authorization", `Bearer ${token}`);
       }
     },
   }),
+  tagTypes: ["user"],
   endpoints: (builder) => ({
     checkAuth: builder.mutation({
       query: () => ({
         url: "/check-auth",
         method: "POST",
       }),
+      invalidatesTags: ["user"],
     }),
     updateUser: builder.mutation({
       query: (user) => ({
@@ -25,6 +27,7 @@ export const userApi = createApi({
         method: "PUT",
         body: user,
       }),
+      invalidatesTags: ["user"],
     }),
   }),
 });

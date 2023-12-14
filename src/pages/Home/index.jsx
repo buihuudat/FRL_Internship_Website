@@ -4,14 +4,29 @@ import { Box, Typography } from "@mui/material";
 import FilterData from "../../components/home/FilterData";
 import ApplyModal from "../../components/ApplyModal";
 import NotificationModal from "../../components/NotificationModal";
+import { useGetJobsQuery } from "../../api/admin/adminApi";
 
 const Home = () => {
+  const { data } = useGetJobsQuery();
   const [jobs, setJobs] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const handleSearch = () => {
+    if (searchQuery) {
+      setJobs(
+        data.filter((job) =>
+          job.title.toLowerCase().includes(searchQuery.toLowerCase())
+        )
+      );
+    } else {
+      setJobs(data);
+    }
+  };
 
   return (
     <Box>
-      <Filter />
-      {!jobs.length ? (
+      <Filter handleSearch={handleSearch} />
+      {jobs.length ? (
         <FilterData />
       ) : (
         <Box sx={{ background: "white", width: "100%", padding: 5 }}>

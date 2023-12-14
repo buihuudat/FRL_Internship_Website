@@ -12,15 +12,13 @@ import LocationOnIcon from "@mui/icons-material/LocationOn";
 import { useState } from "react";
 import { data } from "../../sources/data";
 
-const Filter = () => {
+const Filter = ({ handleSearch }) => {
   const SelectActions = ({ name, data = [] }) => {
     const [value, setValue] = useState(null);
     return (
       <FormControl sx={{ background: "white", width: "30%", borderRadius: 2 }}>
         <InputLabel>{name}</InputLabel>
         <Select
-          labelId="demo-simple-select-label"
-          id="demo-simple-select"
           value={value}
           label={name}
           onChange={(e) => setValue(e.target.value)}
@@ -95,6 +93,7 @@ const Filter = () => {
             background: "red",
           },
         }}
+        onClick={handleSearch}
       >
         <LocationOnIcon sx={{ color: "white" }} />
         <Typography color={"white"} fontWeight={600} fontSize={20}>

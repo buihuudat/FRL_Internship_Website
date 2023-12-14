@@ -17,7 +17,7 @@ import FileBase64 from "react-file-base64";
 import toast from "react-hot-toast";
 import { LoadingButton } from "@mui/lab";
 
-import { useUpdateUserMutation } from "../api/user/userApi";
+import { useUpdateUserMutation } from "../api/admin/adminApi";
 import moment from "moment";
 const style = {
   position: "absolute",
@@ -31,14 +31,13 @@ const style = {
   borderRadius: 5,
 };
 
-const ProfileModal = () => {
-  const userData = useSelector((state) => state.user.user);
+const UpdateUserModal = () => {
   const open = useSelector((state) => state.user.modal.show);
+  const user = useSelector((state) => state.user.modal.data);
 
-  const user = userData;
-
-  const [avatar, setAvatar] = useState(user.avatar);
-  const [gender, setGender] = useState(user.gender);
+  const [avatar, setAvatar] = useState(user?.avatar);
+  const [gender, setGender] = useState(user?.gender);
+  const [role, setRole] = useState(user?.role);
 
   const dispatch = useDispatch();
 
@@ -60,16 +59,17 @@ const ProfileModal = () => {
     e.preventDefault();
     const formData = new FormData(e.target);
     const data = {
-      username: user.username,
-      name: formData.get("name") || user.name,
-      email: formData.get("email") || user.email,
-      phone: formData.get("phone") || user.phone,
-      address: formData.get("address") || user.address,
-      birthday: formData.get("birthday") || user.birthday,
-      description: formData.get("description") || user.description,
-      social: formData.get("social") || user.social,
-      avatar: avatar || user.avatar,
-      gender: gender || user.gender,
+      username: user?.username,
+      name: formData.get("name") || user?.name,
+      email: formData.get("email") || user?.email,
+      phone: formData.get("phone") || user?.phone,
+      address: formData.get("address") || user?.address,
+      birthday: formData.get("birthday") || user?.birthday,
+      description: formData.get("description") || user?.description,
+      social: formData.get("social") || user?.social,
+      avatar: avatar || user?.avatar,
+      gender: gender || user?.gender,
+      role: role || user?.role,
     };
 
     // if (data.name.length < 6) return toast.error("Tên không hợp lệ");
@@ -78,12 +78,15 @@ const ProfileModal = () => {
     //   return toast.error("Số điện thoại không hợp lệ");
     // if (data.phone.length < 10) return toast.error("Địa chỉ không hợp lệ");
 
-    const result = await updateUser(data);
-    if (result.data?.user) {
-      dispatch(setUser(result.data.user));
-      toast.success("Cập nhật thành công");
-      handleClose();
-    }
+    await toast
+      .promise(updateUser(data), {
+        loading: "Đang cập nhật",
+        success: "Cập nhật thành công",
+        error: "Cập nhật thất bại",
+      })
+      .then(() => {
+        handleClose();
+      });
   };
 
   const handleChangeAvatar = (e) => {
@@ -105,7 +108,7 @@ const ProfileModal = () => {
       >
         <Box sx={style} component={"form"} onSubmit={handleSubmit}>
           <Typography fontSize={25} fontWeight={600}>
-            Thông tin cá nhân
+            Cập nhật người dùng
           </Typography>
           <Divider />
 
@@ -117,7 +120,7 @@ const ProfileModal = () => {
             }}
           >
             <Avatar
-              src={avatar}
+              src={user?.avatar || avatar}
               alt="avt-user"
               sx={{ width: 100, height: 100 }}
             />
@@ -154,7 +157,7 @@ const ProfileModal = () => {
             <TextField
               label="Họ và tên"
               required
-              defaultValue={user.name}
+              defaultValue={user?.name}
               name="name"
               fullWidth
             />
@@ -184,7 +187,7 @@ const ProfileModal = () => {
             <FormControl sx={{ width: "45%" }}>
               <InputLabel>Giới tính</InputLabel>
               <Select
-                defaultValue={gender}
+                defaultValue={user?.gender || gender}
                 label="Giới tính"
                 onChange={handleChangeGender}
               >
@@ -204,7 +207,7 @@ const ProfileModal = () => {
               label="Link cá nhân"
               required
               name="social"
-              defaultValue={user?.dayOfBirth}
+              defaultValue={user?.social}
               sx={{ width: "45%" }}
             />
           </Box>
@@ -219,6 +222,17 @@ const ProfileModal = () => {
               fullWidth
             />
           </Box>
+          <FormControl sx={{ mt: 2 }} fullWidth>
+            <InputLabel>Quyền hạn</InputLabel>
+            <Select
+              defaultValue={user?.role || role}
+              label="Quyền hạn"
+              onChange={(e) => setRole(e.target.value)}
+            >
+              <MenuItem value={"admin"}>Admin</MenuItem>
+              <MenuItem value={"user"}>User</MenuItem>
+            </Select>
+          </FormControl>
 
           <LoadingButton
             loading={isLoading}
@@ -236,4 +250,4 @@ const ProfileModal = () => {
   );
 };
 
-export default ProfileModal;
+export default UpdateUserModal;

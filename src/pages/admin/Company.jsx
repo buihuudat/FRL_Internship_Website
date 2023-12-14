@@ -3,12 +3,15 @@ import { setModal } from "../../slice/companySlice";
 import { useDispatch } from "react-redux";
 import CompanyModal from "../../components/companyModal";
 import { useGetCompanyQuery } from "../../api/admin/adminApi";
+import CompanyItem from "../../components/CompanyItem";
+import JobModal from "../../components/JobModal";
 
 const Popup = () => {
   const dispatch = useDispatch();
   const handleCreateCompany = () => {
     dispatch(setModal({ show: true }));
   };
+
   return (
     <Box
       sx={{
@@ -33,8 +36,13 @@ const Company = () => {
     <LinearProgress />
   ) : (
     <Box>
+      <Box p={2} sx={{ display: "flex", gap: 3, flexWrap: "wrap" }}>
+        {!isLoading &&
+          data.map((company) => <CompanyItem key={company._id} {...company} />)}
+      </Box>
       <Popup />
       <CompanyModal />
+      <JobModal />
     </Box>
   );
 };

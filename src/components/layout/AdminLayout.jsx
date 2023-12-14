@@ -15,21 +15,20 @@ const AdminLayout = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const checkAdmin = async () => {
-    const result = await checkAuth();
-    if (
-      (result.data?.user && result.data.user.role !== "admin") ||
-      result.error
-    ) {
-      return navigate("/");
-    }
-    dispatch(setUser(result.data.user));
-    setIsLoading(false);
-  };
-
   useEffect(() => {
+    const checkAdmin = async () => {
+      const result = await checkAuth();
+      if (
+        (result.data?.user && result.data.user.role !== "admin") ||
+        result.error
+      ) {
+        return navigate("/");
+      }
+      dispatch(setUser(result.data.user));
+      setIsLoading(false);
+    };
     checkAdmin();
-  }, []);
+  }, [dispatch, navigate]);
 
   return isLoading ? (
     <LinearProgress />
@@ -45,6 +44,7 @@ const AdminLayout = () => {
       <Navbar />
       <Box
         sx={{
+          pt: 10,
           display: "flex",
           width: "100%",
           height: "100%",
@@ -52,9 +52,7 @@ const AdminLayout = () => {
         }}
       >
         <Sider />
-        <Box pt={10}>
-          <Outlet />
-        </Box>
+        <Outlet />
       </Box>
       <Footer />
     </Box>
