@@ -2,7 +2,7 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import { useDispatch, useSelector } from "react-redux";
-import { setModal, setUser } from "../slice/userSlice";
+import { setModal } from "../slice/userSlice";
 import {
   Avatar,
   Divider,

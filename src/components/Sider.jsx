@@ -47,11 +47,8 @@ const Sider = () => {
 
   const navigate = useNavigate();
   return (
-    <Box sx={{ height: "100vh", width: "15%" }}>
-      <List
-        sx={{ width: "100%", maxWidth: 360, bgcolor: "background.paper" }}
-        component="nav"
-      >
+    <Box sx={{ height: "100vh", width: 300 }}>
+      <List sx={{ width: 300, bgcolor: "background.paper" }} component="nav">
         {dataSider.map((data, i) => (
           <ListItemButton
             key={i}

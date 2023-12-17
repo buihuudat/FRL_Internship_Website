@@ -1,13 +1,9 @@
 import { Box, LinearProgress, Typography } from "@mui/material";
 import JobItem from "../JobItem";
 import JobDetails from "../JobDetails";
-import { useGetJobsQuery } from "../../api/admin/adminApi";
-import { useState } from "react";
 
-const FilterData = () => {
-  const { data, error, isLoading } = useGetJobsQuery();
-  const [dataFilted, setDataFilted] = useState(data);
-
+const FilterData = ({ jobs }) => {
+  const isLoading = false;
   return (
     <Box
       sx={{
@@ -21,13 +17,13 @@ const FilterData = () => {
     >
       <Box sx={{ overflow: "auto" }}>
         <Typography fontSize={23} fontWeight={600}>
-          {data?.length} công việc phù hợp
+          {jobs?.length} công việc phù hợp
         </Typography>
         <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
           {isLoading ? (
             <LinearProgress />
           ) : (
-            data.map((job) => <JobItem key={job._id} {...job} />)
+            jobs.map((job) => <JobItem key={job._id} {...job} />)
           )}
         </Box>
       </Box>

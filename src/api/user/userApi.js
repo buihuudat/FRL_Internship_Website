@@ -12,7 +12,7 @@ export const userApi = createApi({
       }
     },
   }),
-  tagTypes: ["user"],
+  tagTypes: ["user", "job"],
   endpoints: (builder) => ({
     checkAuth: builder.mutation({
       query: () => ({
@@ -29,7 +29,51 @@ export const userApi = createApi({
       }),
       invalidatesTags: ["user"],
     }),
+    jobApply: builder.mutation({
+      query: (data) => ({
+        url: `/apply`,
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["user", "job"],
+    }),
+    cvApplied: builder.query({
+      query: ({ userId }) => ({
+        url: `/${userId}/cv-applied`,
+        method: "GET",
+      }),
+      providesTags: ["user", "job"],
+    }),
+    getNotifications: builder.query({
+      query: ({ userId }) => ({
+        url: `/notifications/${userId}`,
+        method: "GET",
+      }),
+      providesTags: ["user", "notification"],
+    }),
+    pushNotification: builder.mutation({
+      query: (data) => ({
+        url: `/notifications`,
+        method: "POST",
+        body: data,
+      }),
+    }),
+    deleteNotification: builder.mutation({
+      query: (data) => ({
+        url: `/notifications`,
+        method: "DELETE",
+        body: data,
+      }),
+    }),
   }),
 });
 
-export const { useCheckAuthMutation, useUpdateUserMutation } = userApi;
+export const {
+  useCheckAuthMutation,
+  useUpdateUserMutation,
+  useJobApplyMutation,
+  useCvAppliedQuery,
+  useGetNotificationsQuery,
+  usePushNotificationMutation,
+  useDeleteNotificationMutation,
+} = userApi;

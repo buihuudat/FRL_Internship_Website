@@ -7,27 +7,58 @@ import NotificationModal from "../../components/NotificationModal";
 import { useGetJobsQuery } from "../../api/admin/adminApi";
 
 const Home = () => {
-  const { data } = useGetJobsQuery();
   const [jobs, setJobs] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const { data } = useGetJobsQuery();
+  const [dataFilter, setDataFilter] = useState({
+    salary: "",
+    scale: "",
+    workForm: "",
+    time: "",
+  });
 
   const handleSearch = () => {
+    let jobFiltered = { ...data };
     if (searchQuery) {
-      setJobs(
-        data.filter((job) =>
-          job.title.toLowerCase().includes(searchQuery.toLowerCase())
-        )
+      jobFiltered = data.filter(
+        (job) =>
+          job.jobSkills.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          job?.company?.name
+            .toLowerCase()
+            .includes(searchQuery.toLowerCase()) ||
+          job.jobDescription.toLowerCase().includes(searchQuery.toLowerCase())
       );
-    } else {
-      setJobs(data);
     }
+    if (dataFilter.salary !== "") {
+      jobFiltered = jobFiltered.filter(
+        (job) => job.salary === dataFilter.salary
+      );
+    }
+    if (dataFilter.scale !== "") {
+      jobFiltered = jobFiltered.filter((job) => job.scale === dataFilter.scale);
+    }
+    if (dataFilter.workForm !== "") {
+      jobFiltered = jobFiltered.filter(
+        (job) => job.workForm === dataFilter.workForm
+      );
+    }
+    if (dataFilter.time !== "") {
+      jobFiltered = jobFiltered.filter((job) => job.ot === dataFilter.time);
+    }
+    setJobs(jobFiltered);
   };
 
   return (
     <Box>
-      <Filter handleSearch={handleSearch} />
+      <Filter
+        handleSearch={handleSearch}
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+        dataFilter={dataFilter}
+        setDataFilter={setDataFilter}
+      />
       {jobs.length ? (
-        <FilterData />
+        <FilterData jobs={jobs} />
       ) : (
         <Box sx={{ background: "white", width: "100%", padding: 5 }}>
           <Typography

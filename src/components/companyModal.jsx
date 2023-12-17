@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
@@ -26,6 +26,7 @@ import JobItem from "./JobItem";
 const CompanyModal = () => {
   const dataUpdate = useSelector((state) => state.company.modal.data);
   const open = useSelector((state) => state.company.modal.show);
+  const { data } = useGetCompanyJobsQuery({ id: dataUpdate?._id });
 
   const [value, setValue] = useState(
     dataUpdate?.ot === "Cần tăng ca" ? 0 : 1 || 0
@@ -46,10 +47,6 @@ const CompanyModal = () => {
 
   const [createCompany] = useCreateCompanyMutation();
   const [updateCompany] = useUpdateCompanyMutation();
-
-  const { data } = useGetCompanyJobsQuery({ id: dataUpdate?._id });
-
-  console.log(data);
 
   const style = {
     position: "absolute",
@@ -96,7 +93,7 @@ const CompanyModal = () => {
       .then(() => handleClose());
   };
   const handleDone = (e) => {
-    if (e.type !== "image/png") return toast.error("Ảnh không hợp lệ");
+    if (!e.type.includes("image")) return toast.error("Ảnh không hợp lệ");
     setImage(e.base64);
   };
 
@@ -243,7 +240,7 @@ const CompanyModal = () => {
             </Box>
           </Box>
 
-          {dataUpdate && (
+          {dataUpdate?._id && (
             <Box>
               {data?.length > 0 &&
                 data?.map((job) => <JobItem key={job._id} {...job} />)}

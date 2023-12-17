@@ -1,12 +1,24 @@
-import * as React from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import { useDispatch, useSelector } from "react-redux";
 import { notificationModal, showModal } from "../slice/jobSlice";
-import { FormControlLabel, Radio, TextField } from "@mui/material";
+import {
+  FormControl,
+  FormControlLabel,
+  Radio,
+  RadioGroup,
+  TextField,
+} from "@mui/material";
 import FileBase64 from "react-file-base64";
+import { useState } from "react";
+import toast from "react-hot-toast";
+import {
+  useCvAppliedQuery,
+  useJobApplyMutation,
+  usePushNotificationMutation,
+} from "../api/user/userApi";
 
 const style = {
   position: "absolute",
@@ -22,9 +34,22 @@ const style = {
 
 const ApplyModal = () => {
   const dispatch = useDispatch();
-  const [textMore, setTextMore] = React.useState("");
+  const [textMore, setTextMore] = useState("");
+  const [nameOfUser, setNameOfUser] = useState("");
+  const [options, setOptions] = useState("Sử dụng CV đã UpLoad");
+
+  const [file, setFile] = useState({
+    file: "",
+    name: "",
+  });
 
   const open = useSelector((state) => state.job.modal.show);
+  const data = useSelector((state) => state.job.modal.data);
+  const user = useSelector((state) => state.user.user);
+
+  const [jobApply] = useJobApplyMutation();
+  const cvApplied = useCvAppliedQuery({ userId: user?._id });
+  const [pushNotification] = usePushNotificationMutation();
 
   const handleClose = () => {
     dispatch(showModal({ show: false, data: null }));
@@ -32,11 +57,44 @@ const ApplyModal = () => {
 
   const onGetFileDone = (e) => {
     console.log(e);
+    if (!e.type?.includes("document") && !e.type?.includes("pdf"))
+      return toast.error("File không hợp lệ");
+    if (e.size > 5000) return toast.error("File quá lớn");
+    setFile({ file: e.base64, name: e.name });
   };
 
-  const handleApply = () => {
-    handleClose();
-    dispatch(notificationModal({ show: true }));
+  const handleApply = async () => {
+    const dataApply = {
+      uid: user._id,
+      nameOfUser,
+      jobId: data._id,
+      textMore,
+      file,
+    };
+
+    if (dataApply.nameOfUser === "") return toast.error("Bạn chưa nhập tên");
+
+    if (options === "Sử dụng CV đã UpLoad") {
+      if (cvApplied?.data) dataApply.file = cvApplied?.data?.user?.file;
+    }
+    if (dataApply.file.file === "") return toast.error("Chưa có CV");
+
+    const dataNoti = {
+      userId: user._id,
+      companyName: data?.company?.name,
+    };
+
+    await toast
+      .promise(jobApply(dataApply), {
+        loading: "Đang gửi yêu cầu",
+        success: "Gửi yêu cầu thành công",
+        error: "Gửi yêu cầu thất bại",
+      })
+      .then(() => {
+        pushNotification(dataNoti);
+        handleClose();
+        dispatch(notificationModal({ show: true }));
+      });
   };
 
   return (
@@ -50,35 +108,52 @@ const ApplyModal = () => {
         <Box sx={style}>
           <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
             <Typography fontWeight={600} fontSize={25}>
-              Tên công ty
+              {data?.company?.name}
             </Typography>
-            <TextField label={"Tên"} required fullWidth />
+            <TextField
+              label={"Tên"}
+              required
+              fullWidth
+              value={nameOfUser}
+              onChange={(e) => setNameOfUser(e.target.value)}
+            />
             <Typography fontWeight={600} fontSize={25}>
               CV Ứng tuyển
             </Typography>
-            <Box sx={{ border: "2px solid #ddd", padding: 1, borderRadius: 2 }}>
-              <FormControlLabel
-                value="Sử dụng CS đã UpLoad"
-                control={<Radio disabled />}
-                label="Sử dụng CS đã UpLoad"
-              />
-              <Typography color={"error"} sx={{ ml: 4 }}>
-                Tên cv.pdf
-              </Typography>
-            </Box>
+            <FormControl>
+              <RadioGroup
+                defaultValue={options}
+                onChange={(e) => setOptions(e.target.value)}
+              >
+                <Box
+                  sx={{ border: "2px solid #ddd", padding: 1, borderRadius: 2 }}
+                >
+                  <FormControlLabel
+                    value="Sử dụng CV đã UpLoad"
+                    control={<Radio />}
+                    label="Sử dụng CV đã UpLoad"
+                  />
+                  <Typography color={"error"} sx={{ ml: 4 }}>
+                    {cvApplied?.data?.user?.file?.name}
+                  </Typography>
+                </Box>
 
-            <Box sx={{ border: "2px solid #ddd", padding: 1, borderRadius: 2 }}>
-              <FormControlLabel
-                value="Tải lên CV mới"
-                control={<Radio disabled />}
-                label="Tải lên CV mới"
-              />
-              <FileBase64 multiple={true} onDone={onGetFileDone} />
-              <Typography sx={{ ml: 4, color: "#999", fontSize: 12 }}>
-                Hỗ trợ định dạng .doc .pdf, không chứa mật khẩu bảo vệ, dung
-                lượng dưới 3mb.
-              </Typography>
-            </Box>
+                <Box
+                  sx={{ border: "2px solid #ddd", padding: 1, borderRadius: 2 }}
+                >
+                  <FormControlLabel
+                    value="Tải lên CV mới"
+                    control={<Radio />}
+                    label="Tải lên CV mới"
+                  />
+                  <FileBase64 onDone={onGetFileDone} />
+                  <Typography sx={{ ml: 4, color: "#999", fontSize: 12 }}>
+                    Hỗ trợ định dạng .doc .pdf, không chứa mật khẩu bảo vệ, dung
+                    lượng dưới 3mb.
+                  </Typography>
+                </Box>
+              </RadioGroup>
+            </FormControl>
 
             <Typography fontSize={25} fontWeight={600}>
               Thư xin thực tập{" "}
@@ -94,6 +169,7 @@ const ApplyModal = () => {
 
             <TextField
               onChange={(e) => setTextMore(e.target.value)}
+              value={textMore}
               multiline
               rows={3}
               placeholder="Nêu nhiều vị trí cụ thể để làm hồ sơ ứng tuyển của bạn thuyết phục hơn..."

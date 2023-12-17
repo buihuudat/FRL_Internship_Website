@@ -1,24 +1,51 @@
 import { faker } from "@faker-js/faker";
-import { Box, Divider, Paper, Typography } from "@mui/material";
+import {
+  Box,
+  Divider,
+  LinearProgress,
+  Link,
+  Paper,
+  Typography,
+} from "@mui/material";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import BookmarksIcon from "@mui/icons-material/Bookmarks";
 import JobItem from "../../components/JobItem";
 import LanguageIcon from "@mui/icons-material/Language";
 import FacebookIcon from "@mui/icons-material/Facebook";
+import { useParams } from "react-router-dom";
+import {
+  useGetCompanyDetailsQuery,
+  useGetCompanyJobsQuery,
+} from "../../api/admin/adminApi";
 
 const index = () => {
-  return (
+  const param = useParams();
+  const { data: jobsOfCompany } = useGetCompanyJobsQuery({ id: param?.id });
+  const {
+    data: company,
+    error,
+    isLoading,
+  } = useGetCompanyDetailsQuery(param?.id);
+
+  return isLoading ? (
+    <LinearProgress />
+  ) : (
     <Box>
       <Divider sx={{ color: "white" }} />
       <Box sx={{ display: "flex", gap: 5, px: 10 }}>
         <img
-          src={faker.image.avatar()}
-          style={{ borderRadius: 5, width: 200 }}
+          src={company?.image}
+          style={{
+            borderRadius: 5,
+            width: 200,
+            height: 200,
+            objectFit: "cover",
+          }}
           alt="logo-company"
         />
         <Box>
           <Typography fontWeight={600} color={"white"} fontSize={30}>
-            Goline corporation
+            {company?.name}
           </Typography>
           <Box sx={{ display: "flex", gap: 3 }}>
             <Box
@@ -31,7 +58,7 @@ const index = () => {
             >
               <LocationOnIcon sx={{ color: "white" }} />
               <Typography fontWeight={600} color={"white"} fontSize={20}>
-                Hà nội
+                {company?.address}
               </Typography>
             </Box>
             <Box
@@ -44,7 +71,7 @@ const index = () => {
             >
               <BookmarksIcon sx={{ color: "white" }} />
               <Typography fontWeight={600} color={"white"} fontSize={20}>
-                5 việc làm đang tuyển dụng
+                {jobsOfCompany?.length} việc làm đang tuyển dụng
               </Typography>
             </Box>
           </Box>
@@ -83,7 +110,7 @@ const index = () => {
 
           <Paper>
             <Typography fontSize={23} fontWeight={600} pl={5} py={3}>
-              Thông tin sản phẩm
+              Thông tin công ty
             </Typography>
             <Divider />
             <Box
@@ -121,7 +148,7 @@ const index = () => {
               >
                 <Typography>Quy mô công ty</Typography>
                 <Typography fontWeight={600} fontSize={18}>
-                  50-150 nhân viên
+                  {company?.scale}
                 </Typography>
               </Box>
               <Box
@@ -136,7 +163,7 @@ const index = () => {
               >
                 <Typography>Quốc gia</Typography>
                 <Typography fontWeight={600} fontSize={18}>
-                  Việt nam
+                  {company?.country}
                 </Typography>
               </Box>
               <Box
@@ -166,7 +193,7 @@ const index = () => {
               >
                 <Typography>Giờ làm việc</Typography>
                 <Typography fontWeight={600} fontSize={18}>
-                  Không có OT
+                  {company?.ot}
                 </Typography>
               </Box>
             </Box>
@@ -184,27 +211,16 @@ const index = () => {
             </Typography>
             <Divider />
             <Typography p={5} py={2} fontWeight={600}>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Non nisi,
-              sint perspiciatis dolore ut fugiat? Inventore odit, voluptate
-              iusto error veritatis fuga beatae debitis saepe sunt corrupti
-              natus porro veniam? Lorem ipsum dolor sit amet consectetur
-              adipisicing elit. Non nisi, sint perspiciatis dolore ut fugiat?
-              Inventore odit, voluptate iusto error veritatis fuga beatae
-              debitis saepe sunt corrupti natus porro veniam? Lorem ipsum dolor
-              sit amet consectetur adipisicing elit. Non nisi, sint perspiciatis
-              dolore ut fugiat? Inventore odit, voluptate iusto error veritatis
-              fuga beatae debitis saepe sunt corrupti natus porro veniam? Lorem
-              ipsum dolor sit amet consectetur adipisicing elit. Non nisi, sint
-              perspiciatis dolore ut fugiat? Inventore odit, voluptate iusto
-              error veritatis fuga beatae debitis saepe sunt corrupti natus
-              porro veniam?
+              {company?.description}
             </Typography>
             <Divider />
             <Box p={5} pt={2} display={"flex"} alignItems={"center"} gap={3}>
               <Box sx={{ display: "flex", alignItems: "center" }}>
                 <LanguageIcon color="primary" />
                 <Typography color={"primary"} fontWeight={600}>
-                  Website công ty
+                  <a rel="noopener noreferrer" target="_blank">
+                    Website công ty
+                  </a>
                 </Typography>
               </Box>
               <Box sx={{ display: "flex", alignItems: "center" }}>
@@ -224,10 +240,9 @@ const index = () => {
             p: 2,
           }}
         >
-          <JobItem />
-          <JobItem />
-          <JobItem />
-          <JobItem />
+          {jobsOfCompany?.map((job) => (
+            <JobItem key={job._id} {...job} company={company} />
+          ))}
         </Box>
       </Box>
     </Box>

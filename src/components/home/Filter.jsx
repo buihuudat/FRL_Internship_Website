@@ -9,30 +9,45 @@ import {
   MenuItem,
 } from "@mui/material";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
-import { useState } from "react";
 import { data } from "../../sources/data";
 
-const Filter = ({ handleSearch }) => {
-  const SelectActions = ({ name, data = [] }) => {
-    const [value, setValue] = useState(null);
-    return (
-      <FormControl sx={{ background: "white", width: "30%", borderRadius: 2 }}>
-        <InputLabel>{name}</InputLabel>
-        <Select
-          value={value}
-          label={name}
-          onChange={(e) => setValue(e.target.value)}
-        >
-          {data.map((v, i) => (
-            <MenuItem value={v.value} key={i}>
-              {v.value}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
-    );
-  };
+const SelectActions = ({
+  name,
+  data = [],
+  keyName,
+  dataFilter,
+  setDataFilter,
+}) => {
+  return (
+    <FormControl sx={{ background: "white", width: "30%", borderRadius: 2 }}>
+      <InputLabel>{name}</InputLabel>
+      <Select
+        value={dataFilter[keyName]}
+        label={name}
+        onChange={(e) =>
+          setDataFilter((prev) => ({
+            ...prev,
+            [keyName]: e.target.value,
+          }))
+        }
+      >
+        {data.map((v, i) => (
+          <MenuItem value={v.value} key={i}>
+            {v.value}
+          </MenuItem>
+        ))}
+      </Select>
+    </FormControl>
+  );
+};
 
+const Filter = ({
+  handleSearch,
+  searchQuery,
+  setSearchQuery,
+  dataFilter,
+  setDataFilter,
+}) => {
   return (
     <Box
       sx={{
@@ -73,12 +88,38 @@ const Filter = ({ handleSearch }) => {
       >
         <TextField
           placeholder="Nhập từ khóa kỹ năng, công ty,..."
+          onChange={(e) => setSearchQuery(e.target.value)}
+          value={searchQuery}
           sx={{ width: "63%", backgroundColor: "white", borderRadius: 2 }}
         />
-        <SelectActions name="Mức lương" data={data.salary} />
-        <SelectActions name="Khoảng cách" data={data.scale} />
-        <SelectActions name="Hình thức làm việc" data={data.workForm} />
-        <SelectActions name="Thời gian" data={data.time} />
+        <SelectActions
+          name="Mức lương"
+          keyName="salary"
+          data={data.salary}
+          dataFilter={dataFilter}
+          setDataFilter={setDataFilter}
+        />
+        <SelectActions
+          name="Khoảng cách"
+          data={data.scale}
+          dataFilter={dataFilter}
+          setDataFilter={setDataFilter}
+          keyName={"scale"}
+        />
+        <SelectActions
+          name="Hình thức làm việc"
+          data={data.workForm}
+          dataFilter={dataFilter}
+          setDataFilter={setDataFilter}
+          keyName={"wotkingForm"}
+        />
+        <SelectActions
+          name="Thời gian"
+          data={data.time}
+          dataFilter={dataFilter}
+          setDataFilter={setDataFilter}
+          keyName={"ot"}
+        />
       </Box>
       <Button
         sx={{

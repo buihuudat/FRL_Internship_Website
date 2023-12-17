@@ -22,7 +22,13 @@ export const router = createBrowserRouter([
         element: <Home />,
       },
       {
-        path: "/company",
+        path: "/:name",
+        index: true,
+        element: <Home />,
+      },
+
+      {
+        path: "/company/:id",
         index: true,
         element: <CompanyPage />,
       },

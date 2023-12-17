@@ -16,9 +16,9 @@ import NotificationsIcon from "@mui/icons-material/Notifications";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { setUser } from "../../slice/userSlice";
-import { faker } from "@faker-js/faker";
 import moment from "moment";
 import CloseIcon from "@mui/icons-material/Close";
+import { useGetNotificationsQuery } from "../../api/user/userApi";
 
 const Navbar = () => {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -27,6 +27,9 @@ const Navbar = () => {
   const user = useSelector((state) => state.user.user);
 
   const navigate = useNavigate();
+  const { data } = useGetNotificationsQuery({ userId: user?._id });
+
+  const notifications = data?.notifications?.notifications;
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -114,7 +117,7 @@ const Navbar = () => {
           </Box>
 
           <IconButton onClick={() => setShowNoti(true)}>
-            <Badge badgeContent={3} color="error">
+            <Badge badgeContent={notifications?.length} color="error">
               <NotificationsIcon sx={{ color: "white" }} />
             </Badge>
           </IconButton>
@@ -180,7 +183,7 @@ const Navbar = () => {
               overflow: "auto",
             }}
           >
-            {fakeDataNoti.map((data) => (
+            {notifications?.map((data) => (
               <Box key={data._id}>
                 <Box
                   sx={{
@@ -192,10 +195,10 @@ const Navbar = () => {
                 >
                   <Typography fontWeight={600}>{data.title}</Typography>
                   <Typography fontWeight={600}>
-                    {moment(data.date).format("l")}
+                    {moment(data.createdAt).format("l")}
                   </Typography>
                 </Box>
-                <Typography>{data.company}</Typography>
+                <Typography>{data.companyName}</Typography>
                 <Typography>Chúng tôi đã gửi CV đến doanh nghiệp</Typography>
                 <Typography color={"red"} fontSize={13}>
                   Vui lòng chờ phản hồi phía doanh nghiệp qua email đã đăng kí
@@ -211,20 +214,3 @@ const Navbar = () => {
 };
 
 export default Navbar;
-
-const fakeDataNoti = [
-  {
-    _id: faker.datatype.uuid(),
-    title: "Ứng tuyển thành công",
-    content: faker.lorem.paragraph(),
-    date: faker.date.recent(),
-    company: "ten cong ty",
-  },
-  {
-    _id: faker.datatype.uuid(),
-    title: "Ứng tuyển thành công",
-    content: faker.lorem.paragraph(),
-    date: faker.date.recent(),
-    company: "ten cong ty",
-  },
-];

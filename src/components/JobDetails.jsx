@@ -1,21 +1,15 @@
-import {
-  Avatar,
-  Box,
-  Button,
-  Divider,
-  IconButton,
-  Typography,
-} from "@mui/material";
+import { Avatar, Box, Button, Divider, Typography } from "@mui/material";
 
 import CurrencyExchangeIcon from "@mui/icons-material/CurrencyExchange";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import ApartmentIcon from "@mui/icons-material/Apartment";
 import AccessAlarmIcon from "@mui/icons-material/AccessAlarm";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { showModal } from "../slice/jobSlice";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
-const Skill = () => {
+const Skill = ({ name }) => {
   return (
     <Typography
       sx={{
@@ -25,17 +19,24 @@ const Skill = () => {
         border: "1px solid #000",
       }}
     >
-      Tester
+      {name}
     </Typography>
   );
 };
 const JobDetails = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const user = useSelector((state) => state.user.user);
+  const jobSelected = useSelector((state) => state.job.jobSelected);
+
+  const isApplied = jobSelected?.jobApplied.find((j) => j.userId === user._id);
+
   const handleApply = () => {
-    dispatch(showModal({ show: true }));
+    if (!user) return toast.error("Bạn chưa đăng nhập");
+    dispatch(showModal({ show: true, data: jobSelected }));
   };
-  return (
+
+  return jobSelected ? (
     <Box
       sx={{
         border: "2px solid #999",
@@ -47,17 +48,17 @@ const JobDetails = () => {
     >
       <Box sx={{ display: "flex", flexDirection: "row" }}>
         <Avatar
-          onClick={() => navigate("/company")}
+          onClick={() => navigate(`/company/${jobSelected.company._id}`)}
           variant="square"
           alt="img-company"
           sx={{ width: 100, height: 100 }}
-          src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSBKIWAjDsCobecM0lfPBVsgQinMCxRkx2TFTqotbwYdCUzUAHw8KKjWalvLPzIIHkXMdI&usqp=CAU"
+          src={jobSelected.company?.image}
         />
-        <Box>
+        <Box ml={2}>
           <Typography fontWeight={700} fontSize={25}>
-            Tester (QC)
+            {jobSelected.jobTitle}
           </Typography>
-          <Typography fontWeight={600}>Goline corporation</Typography>
+          <Typography fontWeight={600}>{jobSelected.company?.name}</Typography>
           <Box
             sx={{
               display: "flex",
@@ -68,7 +69,7 @@ const JobDetails = () => {
           >
             <CurrencyExchangeIcon />
             <Typography fontWeight={600} fontSize={20}>
-              1.500.000 d
+              {jobSelected.salary}
             </Typography>
           </Box>
         </Box>
@@ -78,10 +79,11 @@ const JobDetails = () => {
         variant="contained"
         color="error"
         fullWidth
-        sx={{ py: 1, fontSize: 25, borderRadius: 5 }}
+        sx={{ p: 1, fontSize: 25, borderRadius: 5, mt: 4 }}
         onClick={handleApply}
+        disabled={isApplied}
       >
-        Ứng tuyển
+        {isApplied ? "Bạn đã ứng tuyển" : "  Ứng tuyển"}
       </Button>
 
       <Divider sx={{ height: 2, py: 2 }} />
@@ -97,7 +99,7 @@ const JobDetails = () => {
         >
           <LocationOnIcon color="error" sx={{ fontSize: 30 }} />
           <Typography color={"red"} fontWeight={600}>
-            tang 8, toa nha kim anh, 78 daij cof viet
+            Cách {jobSelected.company?.scale} km
           </Typography>
         </Box>
         <Box
@@ -109,7 +111,7 @@ const JobDetails = () => {
           }}
         >
           <ApartmentIcon sx={{ fontSize: 30 }} />
-          <Typography fontWeight={600}>Tai van phong</Typography>
+          <Typography fontWeight={600}>{jobSelected.jobLocation}</Typography>
         </Box>
         <Box
           sx={{
@@ -120,16 +122,16 @@ const JobDetails = () => {
           }}
         >
           <AccessAlarmIcon sx={{ fontSize: 30 }} />
-          <Typography fontWeight={600}>Full time</Typography>
+          <Typography fontWeight={600}>{jobSelected.wotkingForm}</Typography>
         </Box>
         <Box sx={{ display: "flex", flexDirection: "row", gap: 1 }}>
           <Typography fontWeight={600} fontSize={20}>
             Kỹ năng:
           </Typography>
           <Box sx={{ display: "flex", flexDirection: "row", gap: 1 }}>
-            <Skill />
-            <Skill />
-            <Skill />
+            {jobSelected.jobSkills?.split(",").map((skill, i) => (
+              <Skill key={i} name={skill} />
+            ))}
           </Box>
         </Box>
 
@@ -150,7 +152,7 @@ const JobDetails = () => {
           >
             <Box sx={{ width: "30%" }}>
               <Typography color={"#333"}>Mô hình công ty</Typography>
-              <Typography fontWeight={600}>Sản phẩm</Typography>
+              <Typography fontWeight={600}>Doanh nghiệp</Typography>
             </Box>
             <Box sx={{ width: "30%" }}>
               <Typography color={"#333"}>Quy mô công ty</Typography>
@@ -158,7 +160,9 @@ const JobDetails = () => {
             </Box>
             <Box sx={{ width: "30%" }}>
               <Typography color={"#333"}>Quốc gia</Typography>
-              <Typography fontWeight={600}>Việt nam</Typography>
+              <Typography fontWeight={600}>
+                {jobSelected.company?.country}
+              </Typography>
             </Box>
             <Box sx={{ width: "30%" }}>
               <Typography color={"#333"}>Thời gian làm việc</Typography>
@@ -166,11 +170,32 @@ const JobDetails = () => {
             </Box>
             <Box sx={{ width: "30%" }}>
               <Typography color={"#333"}>Làm việc ngoài giờ</Typography>
-              <Typography fontWeight={600}>Không có OT</Typography>
+              <Typography fontWeight={600}>
+                {jobSelected.company?.ot}
+              </Typography>
             </Box>
           </Box>
         </Box>
       </Box>
+    </Box>
+  ) : (
+    <Box
+      sx={{
+        border: "2px solid #999",
+        padding: 2,
+        borderRadius: 5,
+        minHeight: 500,
+        backgroundColor: "white",
+      }}
+    >
+      <Typography
+        fontSize={30}
+        fontWeight={600}
+        align="center"
+        fontStyle={"italic"}
+      >
+        Hãy chọn một công việc
+      </Typography>
     </Box>
   );
 };

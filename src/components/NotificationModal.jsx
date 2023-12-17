@@ -1,12 +1,9 @@
-import * as React from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import { useDispatch, useSelector } from "react-redux";
-import { notificationModal, showModal } from "../slice/jobSlice";
-import { FormControlLabel, Radio, TextField } from "@mui/material";
-import FileBase64 from "react-file-base64";
+import { notificationModal } from "../slice/jobSlice";
 
 const style = {
   position: "absolute",
@@ -24,6 +21,8 @@ const NotificationModal = () => {
   const dispatch = useDispatch();
 
   const open = useSelector((state) => state.job.notificationModal.show);
+  const data = useSelector((state) => state.job.notificationModal.data);
+  console.log(data);
 
   const handleClose = () => {
     dispatch(notificationModal({ show: false, data: null }));
@@ -51,8 +50,8 @@ const NotificationModal = () => {
             </Typography>
             <ul style={{ fontSize: 20 }}>
               Chúng tôi đã nhận được CV của bạn cho:
-              <li>Vị trí: vi tri apply</li>
-              <li>Công ty: congty apply</li>
+              <li>Vị trí: </li>
+              <li>Công ty:{data?.company}</li>
             </ul>
 
             <Typography fontSize={18}>

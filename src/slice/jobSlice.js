@@ -8,9 +8,15 @@ const initialState = {
   },
   notificationModal: {
     show: false,
+    data: null,
   },
   createModal: {
     show: false,
+    data: null,
+  },
+  jobSelected: null,
+  appliedModal: {
+    open: false,
     data: null,
   },
 };
@@ -31,9 +37,20 @@ const jobSlice = createSlice({
     setCreateModal: (state, action) => {
       state.createModal = action.payload;
     },
+    setJobSelected: (state, action) => {
+      state.jobSelected = action.payload;
+    },
+    setAppliedModal: (state, action) => {
+      state.appliedModal = action.payload;
+    },
   },
 });
 
-export const { showModal, notificationModal, setCreateModal } =
-  jobSlice.actions;
+export const {
+  showModal,
+  notificationModal,
+  setCreateModal,
+  setJobSelected,
+  setAppliedModal,
+} = jobSlice.actions;
 export default jobSlice.reducer;
