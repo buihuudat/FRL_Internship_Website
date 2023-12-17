@@ -32,7 +32,7 @@ const JobModal = () => {
     dataUpdate?.company?.salary || "Thỏa thuận"
   );
   const [scale, setScale] = useState(dataUpdate?.job?.scale || "Dưới 1km");
-  const [ot, setOt] = useState(0);
+  const [time, setTime] = useState("Toàn thời gian");
   const [company, setCompany] = useState(dataUpdate?.company?._id || undefined);
 
   const [createJob] = useCreateJobMutation();
@@ -76,7 +76,7 @@ const JobModal = () => {
       scale,
       company,
       jobStatus: value,
-      ot: !ot ? "Có tăng ca" : "Không tăng ca",
+      time,
     };
 
     if (data.jobTitle.length < 10)
@@ -175,21 +175,7 @@ const JobModal = () => {
                 />
               </RadioGroup>
             </FormControl>
-            <FormControl>
-              <FormLabel>Tăng ca</FormLabel>
-              <RadioGroup value={ot} onChange={(e) => setOt(+e.target.value)}>
-                <FormControlLabel
-                  value={0}
-                  control={<Radio />}
-                  label="Cần tăng ca"
-                />
-                <FormControlLabel
-                  value={1}
-                  control={<Radio />}
-                  label="Không tăng ca"
-                />
-              </RadioGroup>
-            </FormControl>
+
             <FormControl sx={{ width: 150 }}>
               <InputLabel>Hình thức làm việc</InputLabel>
               <Select
@@ -198,6 +184,20 @@ const JobModal = () => {
                 onChange={(e) => setForm(e.target.value)}
               >
                 {data.workForm.map((data, i) => (
+                  <MenuItem value={data.value} key={i}>
+                    {data.value}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            <FormControl sx={{ width: 150 }}>
+              <InputLabel>Thời gian làm việc</InputLabel>
+              <Select
+                value={time}
+                label="Hình thức làm việc"
+                onChange={(e) => setTime(e.target.value)}
+              >
+                {data.time.map((data, i) => (
                   <MenuItem value={data.value} key={i}>
                     {data.value}
                   </MenuItem>

@@ -18,7 +18,8 @@ const Home = () => {
   });
 
   const handleSearch = () => {
-    let jobFiltered = { ...data };
+    let jobFiltered = data;
+    console.log(jobFiltered);
     if (searchQuery) {
       jobFiltered = data.filter(
         (job) =>
@@ -43,8 +44,9 @@ const Home = () => {
       );
     }
     if (dataFilter.time !== "") {
-      jobFiltered = jobFiltered.filter((job) => job.ot === dataFilter.time);
+      jobFiltered = jobFiltered.filter((job) => job.time === dataFilter.time);
     }
+    console.log(dataFilter);
     setJobs(jobFiltered);
   };
 
