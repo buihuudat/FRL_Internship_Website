@@ -10,8 +10,6 @@ import BusinessIcon from "@mui/icons-material/Business";
 import PeopleIcon from "@mui/icons-material/People";
 import WorkIcon from "@mui/icons-material/Work";
 import { useLocation, useNavigate } from "react-router-dom";
-// import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
-// import MapIcon from '@mui/icons-material/Map';
 
 const Sider = () => {
   const dataSider = [
@@ -30,25 +28,14 @@ const Sider = () => {
       icon: <PeopleIcon />,
       href: "/admin/users",
     },
-
-    // {
-    //   title: "Mức lương",
-    //   icon: <AttachMoneyIcon />,
-    //   href: "/admin/salary",
-    // },
-    // {
-    //   title: "Khoảng cách",
-    //   icon: <MapIcon />,
-    //   href: "/admin/scale",
-    // },
   ];
 
   const { pathname } = useLocation();
 
   const navigate = useNavigate();
   return (
-    <Box sx={{ height: "100vh", width: 300 }}>
-      <List sx={{ width: 300, bgcolor: "background.paper" }} component="nav">
+    <Box sx={{ display: "flex", width: 300, height: "100vh" }}>
+      <List sx={{ bgcolor: "background.paper", width: 300 }} component="nav">
         {dataSider.map((data, i) => (
           <ListItemButton
             key={i}

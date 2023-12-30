@@ -28,7 +28,7 @@ const AdminLayout = () => {
       setIsLoading(false);
     };
     checkAdmin();
-  }, [dispatch, navigate]);
+  }, [dispatch, navigate, checkAuth]);
 
   return isLoading ? (
     <LinearProgress />
@@ -47,13 +47,20 @@ const AdminLayout = () => {
           pt: 10,
           display: "flex",
           width: "100%",
-          height: "100%",
           backgroundColor: "white",
           justifyContent: "space-between",
         }}
       >
-        <Sider />
-        <Outlet />
+        <Box component="nav">
+          <Sider />
+        </Box>
+
+        <Box
+          component="main"
+          sx={{ flexGrow: 1, height: "100vh", overflow: "auto" }}
+        >
+          <Outlet />
+        </Box>
       </Box>
       <Footer />
     </Box>
