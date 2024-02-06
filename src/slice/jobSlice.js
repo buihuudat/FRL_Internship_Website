@@ -43,6 +43,9 @@ const jobSlice = createSlice({
     setAppliedModal: (state, action) => {
       state.appliedModal = action.payload;
     },
+    setJobApplied: (state, action) => {
+      // state.jobSelected = [...state.jobSelected, ]
+    },
   },
 });
 

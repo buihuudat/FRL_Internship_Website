@@ -106,7 +106,6 @@ const ApplyModal = () => {
         );
       });
   };
-  console.log(data);
 
   return (
     <div>

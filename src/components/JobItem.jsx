@@ -129,7 +129,7 @@ const JobItem = (job) => {
           >
             <LocationOnIcon color="error" />
             <Typography color={"red"} fontWeight={600}>
-              Cách {company?.scale} km
+              {job?.scale}
             </Typography>
           </Box>
           <Box

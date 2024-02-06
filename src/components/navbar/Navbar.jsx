@@ -50,8 +50,6 @@ const Navbar = () => {
     navigate("/");
   };
 
-  console.log(data);
-
   return (
     <Box
       sx={{

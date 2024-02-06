@@ -32,6 +32,9 @@ const JobModal = () => {
     dataUpdate?.company?.salary || "Thỏa thuận"
   );
   const [scale, setScale] = useState(dataUpdate?.job?.scale || "Dưới 1km");
+  const [jobLocation_str, setJobLocation_str] = useState(
+    dataUpdate?.job?.jobLocation_str || ""
+  );
   const [time, setTime] = useState("Toàn thời gian");
   const [company, setCompany] = useState(dataUpdate?.company?._id || undefined);
 
@@ -77,6 +80,7 @@ const JobModal = () => {
       company,
       jobStatus: value,
       time,
+      jobLocation_str,
     };
 
     if (data.jobTitle.length < 10)
@@ -218,6 +222,13 @@ const JobModal = () => {
                 ))}
               </Select>
             </FormControl>
+            <TextField
+              name="jobLocation_str"
+              placeholder="Nhập khoảng cách"
+              label="Khoảng cách"
+              defaultValue={jobLocation_str}
+              onChange={(e) => setJobLocation_str(e.target.value)}
+            />
             <FormControl sx={{ width: 150 }}>
               <InputLabel>Mức lương</InputLabel>
               <Select

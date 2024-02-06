@@ -108,7 +108,7 @@ const JobDetails = () => {
         >
           <LocationOnIcon color="error" sx={{ fontSize: 30 }} />
           <Typography color={"red"} fontWeight={600}>
-            Cách {jobSelected.company?.scale} km
+            {jobSelected?.scale}
           </Typography>
         </Box>
         <Box
