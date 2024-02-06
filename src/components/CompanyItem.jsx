@@ -17,7 +17,7 @@ const CompanyItem = (company) => {
   };
 
   return (
-    <Card sx={{ width: 400 }}>
+    <Card sx={{ width: 400, display: "flex", flexDirection: "column" }}>
       <CardMedia
         component="img"
         alt="Company Logo"
@@ -48,7 +48,12 @@ const CompanyItem = (company) => {
         </Typography>
       </CardContent>
 
-      <Button variant="contained" onClick={handleUpdate} fullWidth>
+      <Button
+        variant="contained"
+        onClick={handleUpdate}
+        fullWidth
+        sx={{ marginTop: "auto" }}
+      >
         View Details
       </Button>
     </Card>

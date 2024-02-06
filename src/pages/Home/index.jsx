@@ -5,21 +5,31 @@ import FilterData from "../../components/home/FilterData";
 import ApplyModal from "../../components/ApplyModal";
 import NotificationModal from "../../components/NotificationModal";
 import { useGetJobsQuery } from "../../api/admin/adminApi";
+import { useDispatch } from "react-redux";
+import { setJobSelected } from "../../slice/jobSlice";
+
+import image1 from "../../assets/images/img1.jpg";
+import image2 from "../../assets/images/img2.jpg";
+import image3 from "../../assets/images/img3.jpg";
+import imgJobNotFound from "../../assets/images/nofound.jpg";
 
 const Home = () => {
   const [jobs, setJobs] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const [jobNotFound, setJobNotFound] = useState(false);
+
   const { data } = useGetJobsQuery();
+  const dispatch = useDispatch();
   const [dataFilter, setDataFilter] = useState({
     salary: "",
     scale: "",
-    workForm: "",
+    wotkingForm: "",
     time: "",
   });
 
   const handleSearch = () => {
+    setJobNotFound(false);
     let jobFiltered = data;
-    console.log(jobFiltered);
     if (searchQuery) {
       jobFiltered = data.filter(
         (job) =>
@@ -38,16 +48,19 @@ const Home = () => {
     if (dataFilter.scale !== "") {
       jobFiltered = jobFiltered.filter((job) => job.scale === dataFilter.scale);
     }
-    if (dataFilter.workForm !== "") {
+    if (dataFilter.wotkingForm !== "" && dataFilter.wotkingForm !== "Cả hai") {
       jobFiltered = jobFiltered.filter(
-        (job) => job.workForm === dataFilter.workForm
+        (job) => job.wotkingForm === dataFilter.wotkingForm
       );
     }
     if (dataFilter.time !== "") {
       jobFiltered = jobFiltered.filter((job) => job.time === dataFilter.time);
     }
-    console.log(dataFilter);
+
+    if (!jobFiltered.length) setJobNotFound(true);
+
     setJobs(jobFiltered);
+    dispatch(setJobSelected(jobFiltered[0]));
   };
 
   return (
@@ -59,8 +72,39 @@ const Home = () => {
         dataFilter={dataFilter}
         setDataFilter={setDataFilter}
       />
-      {jobs.length ? (
+      {jobs?.length ? (
         <FilterData jobs={jobs} />
+      ) : jobNotFound ? (
+        <Box
+          sx={{
+            height: "80vh",
+            background: "#ddd",
+            display: "flex",
+            justifyContent: "center",
+            alignContent: "center",
+          }}
+        >
+          <Box
+            sx={{
+              backgroundColor: "white",
+              display: "flex",
+              justifyContent: "center",
+              flexDirection: "column",
+              height: "90%",
+              margin: 5,
+              borderRadius: 5,
+            }}
+          >
+            <img
+              src={imgJobNotFound}
+              alt="job not found"
+              style={{ width: "auto", height: "400px", objectFit: "cover" }}
+            />
+            <Typography textAlign={"center"} fontWeight={600} fontSize={25}>
+              Xin lỗi! Việc làm bạn đang tìm kiếm không tồn tại.
+            </Typography>
+          </Box>
+        </Box>
       ) : (
         <Box sx={{ background: "white", width: "100%", padding: 5 }}>
           <Typography
@@ -92,9 +136,7 @@ const Home = () => {
               }}
             >
               <img
-                src={
-                  "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSBKIWAjDsCobecM0lfPBVsgQinMCxRkx2TFTqotbwYdCUzUAHw8KKjWalvLPzIIHkXMdI&usqp=CAU"
-                }
+                src={image1}
                 alt="im2"
                 style={{ height: 300, width: "auto", objectFit: "cover" }}
               />
@@ -112,7 +154,7 @@ const Home = () => {
               }}
             >
               <img
-                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSBKIWAjDsCobecM0lfPBVsgQinMCxRkx2TFTqotbwYdCUzUAHw8KKjWalvLPzIIHkXMdI&usqp=CAU"
+                src={image2}
                 alt="im2"
                 style={{ height: 300, width: "auto", objectFit: "cover" }}
               />
@@ -130,7 +172,7 @@ const Home = () => {
               }}
             >
               <img
-                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSBKIWAjDsCobecM0lfPBVsgQinMCxRkx2TFTqotbwYdCUzUAHw8KKjWalvLPzIIHkXMdI&usqp=CAU"
+                src={image3}
                 alt="im2"
                 style={{ height: 300, width: "auto", objectFit: "cover" }}
               />

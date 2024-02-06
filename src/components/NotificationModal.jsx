@@ -22,7 +22,6 @@ const NotificationModal = () => {
 
   const open = useSelector((state) => state.job.notificationModal.show);
   const data = useSelector((state) => state.job.notificationModal.data);
-  console.log(data);
 
   const handleClose = () => {
     dispatch(notificationModal({ show: false, data: null }));

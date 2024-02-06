@@ -4,8 +4,8 @@ import { createApi } from "@reduxjs/toolkit/query/react";
 export const adminApi = createApi({
   reducerPath: "adminApi",
   baseQuery: fetchBaseQuery({
-    // baseUrl: "http://localhost:5000/api/v1/admin",
-    baseUrl: "https://internship-gpdp.onrender.com/api/v1/admin",
+    baseUrl: "http://localhost:5000/api/v1/admin",
+    // baseUrl: "https://internship-gpdp.onrender.com/api/v1/admin",
     prepareHeaders: async (headers) => {
       const token = localStorage.getItem("token");
       if (token) {

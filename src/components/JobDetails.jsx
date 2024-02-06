@@ -51,11 +51,16 @@ const JobDetails = () => {
           onClick={() => navigate(`/company/${jobSelected.company._id}`)}
           variant="square"
           alt="img-company"
-          sx={{ width: 100, height: 100 }}
+          sx={{ width: 100, height: 100, cursor: "pointer" }}
           src={jobSelected.company?.image}
         />
         <Box ml={2}>
-          <Typography fontWeight={700} fontSize={25}>
+          <Typography
+            fontWeight={700}
+            fontSize={25}
+            sx={{ cursor: "pointer" }}
+            onClick={() => navigate(`/company/${jobSelected.company._id}`)}
+          >
             {jobSelected.jobTitle}
           </Typography>
           <Typography fontWeight={600}>{jobSelected.company?.name}</Typography>
@@ -125,10 +130,17 @@ const JobDetails = () => {
           <Typography fontWeight={600}>{jobSelected.wotkingForm}</Typography>
         </Box>
         <Box sx={{ display: "flex", flexDirection: "row", gap: 1 }}>
-          <Typography fontWeight={600} fontSize={20}>
+          <Typography fontWeight={600} fontSize={20} width={120}>
             Kỹ năng:
           </Typography>
-          <Box sx={{ display: "flex", flexDirection: "row", gap: 1 }}>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              gap: 1,
+              flexWrap: "wrap",
+            }}
+          >
             {jobSelected.jobSkills?.split(",").map((skill, i) => (
               <Skill key={i} name={skill} />
             ))}
@@ -139,7 +151,7 @@ const JobDetails = () => {
 
         <Box>
           <Typography fontSize={25} fontWeight={600}>
-            ten cong ty
+            {jobSelected.company?.name}
           </Typography>
           <Box
             sx={{

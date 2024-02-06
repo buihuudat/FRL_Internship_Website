@@ -21,18 +21,14 @@ import {
 const index = () => {
   const param = useParams();
   const { data: jobsOfCompany } = useGetCompanyJobsQuery({ id: param?.id });
-  const {
-    data: company,
-    error,
-    isLoading,
-  } = useGetCompanyDetailsQuery(param?.id);
+  const { data: company, isLoading } = useGetCompanyDetailsQuery(param?.id);
 
   return isLoading ? (
     <LinearProgress />
   ) : (
     <Box>
       <Divider sx={{ color: "white" }} />
-      <Box sx={{ display: "flex", gap: 5, px: 10 }}>
+      <Box sx={{ display: "flex", gap: 3, px: 10 }}>
         <img
           src={company?.image}
           style={{
@@ -80,20 +76,20 @@ const index = () => {
       <Box
         sx={{
           mt: 5,
-          background: "#999",
+          background: "#ddd",
           display: "flex",
           width: "100%",
           justifyContent: "center",
+          px: 10,
         }}
       >
         <Box
           sx={{
-            px: 10,
             py: 3,
             width: "70%",
             display: "flex",
             flexDirection: "column",
-            gap: 5,
+            gap: 3,
           }}
         >
           <Paper>
@@ -218,7 +214,12 @@ const index = () => {
               <Box sx={{ display: "flex", alignItems: "center" }}>
                 <LanguageIcon color="primary" />
                 <Typography color={"primary"} fontWeight={600}>
-                  <a rel="noopener noreferrer" target="_blank">
+                  <a
+                    rel="noopener noreferrer"
+                    target="_blank"
+                    href="/"
+                    style={{ textDecoration: "none" }}
+                  >
                     Website công ty
                   </a>
                 </Typography>
@@ -226,7 +227,14 @@ const index = () => {
               <Box sx={{ display: "flex", alignItems: "center" }}>
                 <FacebookIcon color="primary" />
                 <Typography color="primary" fontWeight={600}>
-                  Fanpage Facebook
+                  <a
+                    rel="noopener noreferrer"
+                    target="_blank"
+                    href="/"
+                    style={{ textDecoration: "none" }}
+                  >
+                    Fanpage Facebook
+                  </a>
                 </Typography>
               </Box>
             </Box>
@@ -238,6 +246,8 @@ const index = () => {
             flexDirection: "column",
             gap: 2,
             p: 2,
+            maxHeight: 600,
+            overflow: "auto",
           }}
         >
           {jobsOfCompany?.map((job) => (

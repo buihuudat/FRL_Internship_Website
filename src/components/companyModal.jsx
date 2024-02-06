@@ -62,6 +62,7 @@ const CompanyModal = () => {
     gap: 5,
     justifyContent: "space-between",
     flexWrap: "wrap",
+    maxHeight: "80%",
   };
 
   const handleSubmit = async (e) => {
@@ -114,7 +115,6 @@ const CompanyModal = () => {
               flexDirection: "column",
               gap: 10,
               overflow: "auto",
-              maxHeight: "100%",
             }}
           >
             <Typography fontWeight={600} fontSize={25} align="center">
@@ -241,7 +241,12 @@ const CompanyModal = () => {
           </Box>
 
           {dataUpdate?._id && (
-            <Box>
+            <Box
+              sx={{
+                overflow: "auto",
+                maxHeight: "600px",
+              }}
+            >
               {data?.length > 0 &&
                 data?.map((job) => <JobItem key={job._id} {...job} />)}
             </Box>

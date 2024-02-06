@@ -11,7 +11,6 @@ import {
   setCreateModal,
   setJobSelected,
 } from "../slice/jobSlice";
-import JobModal from "./JobModal";
 
 const JobItem = (job) => {
   const { pathname } = useLocation();
@@ -78,7 +77,7 @@ const JobItem = (job) => {
         flexDirection: "column",
         gap: 1,
         backgroundColor: "white",
-        padding: 1,
+        borderRadius: 5,
       }}
     >
       <Box
@@ -164,7 +163,9 @@ const JobItem = (job) => {
         </Box>
       </Box>
       {pathname.includes("admin") && (
-        <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+        <Box
+          sx={{ display: "flex", flexDirection: "column", gap: 1, padding: 1 }}
+        >
           <Box display={"flex"} justifyContent={"space-between"}>
             <Button variant="outlined" color="error" onClick={handleDelete}>
               Delete

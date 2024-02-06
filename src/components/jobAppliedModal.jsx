@@ -1,4 +1,4 @@
-import { Box, Modal, Paper } from "@mui/material";
+import { Box, Modal, Paper, Typography } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { setAppliedModal } from "../slice/jobSlice";
 
@@ -7,7 +7,7 @@ const style = {
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  width: 400,
+  width: 600,
   bgcolor: "background.paper",
   boxShadow: 24,
   pt: 2,
@@ -30,6 +30,9 @@ const JobAppliedModal = () => {
   return (
     <Modal open={open} onClose={handleClose}>
       <Box sx={{ ...style }}>
+        <Typography textAlign={"center"}>
+          Có tổng cộng {data?.length} CV đã ứng tuyển
+        </Typography>
         {data?.map((d, i) => (
           <Box key={i} sx={{ display: "flex", flexDirection: "column" }}>
             <Paper

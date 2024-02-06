@@ -116,7 +116,7 @@ const Navbar = () => {
             </Menu>
           </Box>
 
-          <IconButton onClick={() => setShowNoti(true)}>
+          <IconButton onClick={() => setShowNoti(!showNoti)}>
             <Badge badgeContent={notifications?.length} color="error">
               <NotificationsIcon sx={{ color: "white" }} />
             </Badge>
@@ -172,9 +172,6 @@ const Navbar = () => {
             <Typography fontWeight={600} fontSize={18}>
               Thông báo
             </Typography>
-            <IconButton onClick={() => setShowNoti(false)}>
-              <CloseIcon />
-            </IconButton>
           </Box>
           <Divider />
           <Box

@@ -30,12 +30,10 @@ const Popup = () => {
   );
 };
 
-console.log();
-
 const Jobs = () => {
   const { data, isLoading } = useGetJobsQuery();
   return isLoading ? (
-    <Box display={"flex"} sx={{ m: "0 auto" }}>
+    <Box display={"flex"} sx={{ m: "0 auto", justifyContent: "center" }}>
       <CircularProgress />
     </Box>
   ) : (

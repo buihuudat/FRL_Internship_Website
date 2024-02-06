@@ -10,9 +10,11 @@ import BorderColorIcon from "@mui/icons-material/BorderColor";
 import { setModal } from "../../slice/userSlice";
 import ProfileModal from "../../components/ProfileModal";
 import moment from "moment";
+import { useState } from "react";
 
 const Profile = () => {
   const { user } = useSelector((state) => state.user);
+  const [showFull, setShowFull] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -37,6 +39,7 @@ const Profile = () => {
           justifyContent: "center",
           flexDirection: "column",
           gap: 5,
+          padding: 10,
         }}
       >
         <Box
@@ -46,8 +49,9 @@ const Profile = () => {
             justifyContent: "center",
             backgroundColor: "white",
             padding: 5,
-            width: 500,
+            width: 700,
             borderRadius: 5,
+            elevation: 5,
           }}
         >
           <Box
@@ -64,10 +68,14 @@ const Profile = () => {
                 flexDirection: "row",
                 alignItems: "center",
                 gap: 2,
-                pb: 2,
+                pb: 4,
               }}
             >
-              <Avatar src={user?.avatar} alt="avt-user" />
+              <Avatar
+                src={user?.avatar}
+                alt="avt-user"
+                sx={{ width: 80, height: 80 }}
+              />
               <Typography fontWeight={600} fontSize={23}>
                 {user?.name || user?.username}
               </Typography>
@@ -83,32 +91,32 @@ const Profile = () => {
               justifyContent: "space-between",
             }}
           >
-            <Box>
+            <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
               <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                <MailOutlineIcon />
+                <MailOutlineIcon color="error" />
                 <Typography>{user?.email}</Typography>
               </Box>
 
               <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                <PhoneIcon />
+                <PhoneIcon color="error" />
                 <Typography>{user?.phone}</Typography>
               </Box>
               <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                <LocationOnIcon />
+                <LocationOnIcon color="error" />
                 <Typography>{user?.address}</Typography>
               </Box>
             </Box>
-            <Box>
+            <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
               <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                <PersonIcon />
+                <PersonIcon color="error" />
                 <Typography>{user?.gender}</Typography>
               </Box>
               <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                <CardGiftcardIcon />
+                <CardGiftcardIcon color="error" />
                 <Typography>{moment(user?.birthday).format("l")}</Typography>
               </Box>
               <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                <SocialDistanceIcon />
+                <SocialDistanceIcon color="error" />
                 <Typography>{user?.social}</Typography>
               </Box>
             </Box>
@@ -116,11 +124,23 @@ const Profile = () => {
         </Box>
 
         <Box
-          sx={{ background: "#fff", padding: 5, width: 500, borderRadius: 5 }}
+          sx={{ background: "#fff", padding: 5, width: 700, borderRadius: 5 }}
         >
           <Typography fontWeight={600}>Giới thiệu bản thân</Typography>
           <Divider />
-          <Typography>{user?.description}</Typography>
+          <Typography>
+            {showFull
+              ? user?.description
+              : user?.description?.slice(0, 100) + "..."}
+            {
+              <a
+                onClick={() => setShowFull(!showFull)}
+                style={{ color: "blue", fontWeight: "bold", cursor: "pointer" }}
+              >
+                {!showFull ? "Hiện thêm" : "Ẩn bớt"}
+              </a>
+            }
+          </Typography>
         </Box>
       </Box>
       <ProfileModal />

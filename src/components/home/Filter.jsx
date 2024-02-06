@@ -19,7 +19,13 @@ const SelectActions = ({
   setDataFilter,
 }) => {
   return (
-    <FormControl sx={{ background: "white", width: "30%", borderRadius: 2 }}>
+    <FormControl
+      sx={{
+        background: "white",
+        width: "30%",
+        borderRadius: 2,
+      }}
+    >
       <InputLabel>{name}</InputLabel>
       <Select
         value={dataFilter[keyName]}
