@@ -61,8 +61,8 @@ const Home = () => {
       jobFiltered = jobFiltered.filter((job) => job.time === time);
     }
 
-    setJobs(searchQuery === "" ? [] : jobFiltered);
-    setJobSelected(jobFiltered[0]);
+    setJobs(jobFiltered);
+    dispatch(setJobSelected(jobFiltered[0]));
 
     if (!jobFiltered.length) {
       setJobNotFound(true);

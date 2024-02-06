@@ -85,6 +85,7 @@ const ApplyModal = () => {
     const dataNoti = {
       userId: user._id,
       companyName: data?.company?.name,
+      jobTitle: data?.jobTitle,
     };
 
     await toast

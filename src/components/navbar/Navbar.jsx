@@ -17,7 +17,6 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { setUser } from "../../slice/userSlice";
 import moment from "moment";
-import CloseIcon from "@mui/icons-material/Close";
 import { useGetNotificationsQuery } from "../../api/user/userApi";
 
 const Navbar = () => {
@@ -50,6 +49,8 @@ const Navbar = () => {
     dispatch(setUser(null));
     navigate("/");
   };
+
+  console.log(data);
 
   return (
     <Box
@@ -187,15 +188,21 @@ const Navbar = () => {
                     display: "flex",
                     flexDirection: "row",
                     alignItems: "center",
-                    gap: 4,
+                    justifyContent: "space-between",
                   }}
                 >
-                  <Typography fontWeight={600}>{data.title}</Typography>
+                  <Typography fontWeight={600} sx={{ color: "#555" }}>
+                    {data.title}
+                  </Typography>
                   <Typography fontWeight={600}>
-                    {moment(data.createdAt).format("l")}
+                    {moment(data.createdAt).format("DD/MM/YYYY")}
                   </Typography>
                 </Box>
-                <Typography>{data.companyName}</Typography>
+                <Typography fontWeight={600}>{data.companyName}</Typography>
+                <Typography sx={{ fontStyle: "italic" }}>
+                  {data?.jobTitle &&
+                    `Cảm ơn bạn đã apply vị trí ${data?.jobTitle}`}
+                </Typography>
                 <Typography>Chúng tôi đã gửi CV đến doanh nghiệp</Typography>
                 <Typography color={"red"} fontSize={13}>
                   Vui lòng chờ phản hồi phía doanh nghiệp qua email đã đăng kí
