@@ -29,38 +29,44 @@ const Home = () => {
 
   const handleSearch = () => {
     setJobNotFound(false);
-    let jobFiltered = data;
+    let jobFiltered = [...data];
+
     if (searchQuery) {
-      jobFiltered = data.filter(
+      const query = searchQuery.toLowerCase();
+      jobFiltered = jobFiltered.filter(
         (job) =>
-          job.jobSkills.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          job?.company?.name
-            .toLowerCase()
-            .includes(searchQuery.toLowerCase()) ||
-          job.jobDescription.toLowerCase().includes(searchQuery.toLowerCase())
+          job.jobSkills.toLowerCase().includes(query) ||
+          job?.company?.name.toLowerCase().includes(query) ||
+          job.jobDescription.toLowerCase().includes(query)
       );
-    }
-    if (dataFilter.salary !== "") {
-      jobFiltered = jobFiltered.filter(
-        (job) => job.salary === dataFilter.salary
-      );
-    }
-    if (dataFilter.scale !== "") {
-      jobFiltered = jobFiltered.filter((job) => job.scale === dataFilter.scale);
-    }
-    if (dataFilter.wotkingForm !== "" && dataFilter.wotkingForm !== "Cả hai") {
-      jobFiltered = jobFiltered.filter(
-        (job) => job.wotkingForm === dataFilter.wotkingForm
-      );
-    }
-    if (dataFilter.time !== "") {
-      jobFiltered = jobFiltered.filter((job) => job.time === dataFilter.time);
     }
 
-    if (!jobFiltered.length) setJobNotFound(true);
+    const { salary, scale, wotkingForm, time } = dataFilter;
 
-    setJobs(jobFiltered);
-    dispatch(setJobSelected(jobFiltered[0]));
+    if (salary !== "") {
+      jobFiltered = jobFiltered.filter((job) => job.salary === salary);
+    }
+
+    if (scale !== "") {
+      jobFiltered = jobFiltered.filter((job) => job.scale === scale);
+    }
+
+    if (wotkingForm !== "" && wotkingForm !== "Cả hai") {
+      jobFiltered = jobFiltered.filter(
+        (job) => job.wotkingForm === wotkingForm
+      );
+    }
+
+    if (time !== "") {
+      jobFiltered = jobFiltered.filter((job) => job.time === time);
+    }
+
+    setJobs(searchQuery === "" ? [] : jobFiltered);
+    setJobSelected(jobFiltered[0]);
+
+    if (!jobFiltered.length) {
+      setJobNotFound(true);
+    }
   };
 
   return (

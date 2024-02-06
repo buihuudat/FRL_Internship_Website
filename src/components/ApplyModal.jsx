@@ -3,7 +3,11 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import { useDispatch, useSelector } from "react-redux";
-import { notificationModal, showModal } from "../slice/jobSlice";
+import {
+  notificationModal,
+  setJobSelected,
+  showModal,
+} from "../slice/jobSlice";
 import {
   FormControl,
   FormControlLabel,
@@ -56,7 +60,6 @@ const ApplyModal = () => {
   };
 
   const onGetFileDone = (e) => {
-    console.log(e);
     if (!e.type?.includes("document") && !e.type?.includes("pdf"))
       return toast.error("File không hợp lệ");
     if (e.size > 5000) return toast.error("File quá lớn");
@@ -93,9 +96,16 @@ const ApplyModal = () => {
       .then(() => {
         pushNotification(dataNoti);
         handleClose();
-        dispatch(notificationModal({ show: true }));
+        dispatch(notificationModal({ show: true, data }));
+        dispatch(
+          setJobSelected({
+            ...(data || {}),
+            jobApplied: [...(data?.jobApplied || []), { userId: user._id }],
+          })
+        );
       });
   };
+  console.log(data);
 
   return (
     <div>

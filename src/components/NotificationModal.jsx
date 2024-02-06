@@ -49,8 +49,12 @@ const NotificationModal = () => {
             </Typography>
             <ul style={{ fontSize: 20 }}>
               Chúng tôi đã nhận được CV của bạn cho:
-              <li>Vị trí: </li>
-              <li>Công ty:{data?.company}</li>
+              <li>
+                Vị trí: <b>{data?.company?.address}</b>
+              </li>
+              <li>
+                Công ty: <b>{data?.company?.name}</b>
+              </li>
             </ul>
 
             <Typography fontSize={18}>

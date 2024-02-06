@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { showModal } from "../slice/jobSlice";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import { useMemo } from "react";
 
 const Skill = ({ name }) => {
   return (
@@ -29,7 +30,10 @@ const JobDetails = () => {
   const user = useSelector((state) => state.user.user);
   const jobSelected = useSelector((state) => state.job.jobSelected);
 
-  const isApplied = jobSelected?.jobApplied.find((j) => j.userId === user._id);
+  const isApplied = useMemo(
+    () => jobSelected?.jobApplied.find((j) => j.userId === user._id),
+    [jobSelected, user._id]
+  );
 
   const handleApply = () => {
     if (!user) return toast.error("Bạn chưa đăng nhập");
