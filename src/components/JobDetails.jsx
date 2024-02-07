@@ -32,7 +32,7 @@ const JobDetails = () => {
 
   const isApplied = useMemo(
     () => jobSelected?.jobApplied.find((j) => j.userId === user._id),
-    [jobSelected, user._id]
+    [jobSelected, user?._id]
   );
 
   const handleApply = () => {
@@ -108,7 +108,7 @@ const JobDetails = () => {
         >
           <LocationOnIcon color="error" sx={{ fontSize: 30 }} />
           <Typography color={"red"} fontWeight={600}>
-            {jobSelected?.scale}
+            {jobSelected?.jobLocation_str} km
           </Typography>
         </Box>
         <Box

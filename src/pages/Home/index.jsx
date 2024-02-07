@@ -5,8 +5,8 @@ import FilterData from "../../components/home/FilterData";
 import ApplyModal from "../../components/ApplyModal";
 import NotificationModal from "../../components/NotificationModal";
 import { useGetJobsQuery } from "../../api/admin/adminApi";
-import { useDispatch } from "react-redux";
-import { setJobSelected } from "../../slice/jobSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { setJobSelected, setJobs } from "../../slice/jobSlice";
 
 import image1 from "../../assets/images/img1.jpg";
 import image2 from "../../assets/images/img2.jpg";
@@ -14,9 +14,10 @@ import image3 from "../../assets/images/img3.jpg";
 import imgJobNotFound from "../../assets/images/nofound.jpg";
 
 const Home = () => {
-  const [jobs, setJobs] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [jobNotFound, setJobNotFound] = useState(false);
+
+  const jobs = useSelector((state) => state.job.jobs);
 
   const { data } = useGetJobsQuery();
   const dispatch = useDispatch();
@@ -61,7 +62,7 @@ const Home = () => {
       jobFiltered = jobFiltered.filter((job) => job.time === time);
     }
 
-    setJobs(jobFiltered);
+    dispatch(setJobs(jobFiltered));
     dispatch(setJobSelected(jobFiltered[0]));
 
     if (!jobFiltered.length) {

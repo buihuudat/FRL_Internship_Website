@@ -226,7 +226,7 @@ const JobModal = () => {
               name="jobLocation_str"
               placeholder="Nhập khoảng cách"
               label="Khoảng cách"
-              defaultValue={jobLocation_str}
+              defaultValue={dataUpdate?.job?.jobLocation_str || jobLocation_str}
               onChange={(e) => setJobLocation_str(e.target.value)}
             />
             <FormControl sx={{ width: 150 }}>

@@ -94,7 +94,7 @@ const JobItem = (job) => {
           backgroundColor: "white",
         }}
       >
-        <Typography sx={{ fontSize: 20, fontWeight: "600" }}>
+        <Typography sx={{ fontSize: 20, fontWeight: "600", height: 60 }}>
           {job.jobTitle}
         </Typography>
 
@@ -129,7 +129,7 @@ const JobItem = (job) => {
           >
             <LocationOnIcon color="error" />
             <Typography color={"red"} fontWeight={600}>
-              {job?.scale}
+              {job?.jobLocation_str || 0} km
             </Typography>
           </Box>
           <Box
@@ -164,7 +164,13 @@ const JobItem = (job) => {
       </Box>
       {pathname.includes("admin") && (
         <Box
-          sx={{ display: "flex", flexDirection: "column", gap: 1, padding: 1 }}
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            gap: 1,
+            padding: 1,
+            marginTop: "auto",
+          }}
         >
           <Box display={"flex"} justifyContent={"space-between"}>
             <Button variant="outlined" color="error" onClick={handleDelete}>

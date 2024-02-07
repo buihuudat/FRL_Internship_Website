@@ -5,6 +5,7 @@ import Modal from "@mui/material/Modal";
 import { useDispatch, useSelector } from "react-redux";
 import {
   notificationModal,
+  setJobApplied,
   setJobSelected,
   showModal,
 } from "../slice/jobSlice";
@@ -98,12 +99,7 @@ const ApplyModal = () => {
         pushNotification(dataNoti);
         handleClose();
         dispatch(notificationModal({ show: true, data }));
-        dispatch(
-          setJobSelected({
-            ...(data || {}),
-            jobApplied: [...(data?.jobApplied || []), { userId: user._id }],
-          })
-        );
+        dispatch(setJobApplied({ job: data, userId: user._id }));
       });
   };
 
