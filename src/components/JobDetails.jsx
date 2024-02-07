@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { showModal } from "../slice/jobSlice";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 
 const Skill = ({ name }) => {
   return (
@@ -30,6 +30,8 @@ const JobDetails = () => {
   const user = useSelector((state) => state.user.user);
   const jobSelected = useSelector((state) => state.job.jobSelected);
 
+  const [showFull, setShowFull] = useState(false);
+
   const isApplied = useMemo(
     () => jobSelected?.jobApplied.find((j) => j.userId === user._id),
     [jobSelected, user?._id]
@@ -39,6 +41,8 @@ const JobDetails = () => {
     if (!user) return toast.error("Bạn chưa đăng nhập");
     dispatch(showModal({ show: true, data: jobSelected }));
   };
+
+  console.log(jobSelected);
 
   return jobSelected ? (
     <Box
@@ -191,6 +195,31 @@ const JobDetails = () => {
               </Typography>
             </Box>
           </Box>
+        </Box>
+        <Divider sx={{ pt: 2 }} />
+
+        <Box>
+          <Typography fontSize={25} fontWeight={600}>
+            Thông tin chi tiết
+          </Typography>
+          <Typography>
+            {showFull
+              ? jobSelected?.jobDescription
+              : jobSelected?.jobDescription?.slice(0, 200) + "..."}
+            {
+              <a
+                onClick={() => setShowFull(!showFull)}
+                style={{
+                  color: "blue",
+                  fontWeight: "bold",
+                  cursor: "pointer",
+                  paddingLeft: 10,
+                }}
+              >
+                {!showFull ? "Hiện thêm" : "Ẩn bớt"}
+              </a>
+            }
+          </Typography>
         </Box>
       </Box>
     </Box>
