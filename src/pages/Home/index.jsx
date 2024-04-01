@@ -1,25 +1,36 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Filter from "../../components/home/Filter";
 import { Box, Typography } from "@mui/material";
 import FilterData from "../../components/home/FilterData";
 import ApplyModal from "../../components/ApplyModal";
 import NotificationModal from "../../components/NotificationModal";
-import { useGetJobsQuery } from "../../api/admin/adminApi";
 import { useDispatch, useSelector } from "react-redux";
-import { setJobSelected, setJobs } from "../../slice/jobSlice";
+import { setJobSelected, setJobsResult } from "../../slice/jobSlice";
 
 import image1 from "../../assets/images/img1.jpg";
 import image2 from "../../assets/images/img2.jpg";
 import image3 from "../../assets/images/img3.jpg";
 import imgJobNotFound from "../../assets/images/nofound.jpg";
+import { jobApi } from "../../utils/api/jobApi";
+import { useNavigate } from "react-router-dom";
 
 const Home = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [jobNotFound, setJobNotFound] = useState(false);
+  const [jobs, setJobs] = useState([]);
 
-  const jobs = useSelector((state) => state.job.jobs);
+  const navigate = useNavigate();
 
-  const { data } = useGetJobsQuery();
+  useEffect(() => {
+    const getJobs = async () => {
+      const rs = await jobApi.getJobs();
+      setJobs(rs);
+    };
+    getJobs();
+  }, []);
+
+  const { jobsResult } = useSelector((state) => state.job);
+
   const dispatch = useDispatch();
   const [dataFilter, setDataFilter] = useState({
     salary: "",
@@ -30,12 +41,18 @@ const Home = () => {
 
   const handleSearch = () => {
     setJobNotFound(false);
-    let jobFiltered = [...data];
+    let jobFiltered = [...jobs];
+    const search = JSON.parse(localStorage.getItem("search")) || [];
+    {
+      searchQuery.trim() && search.push(searchQuery);
+    }
+    localStorage.setItem("search", JSON.stringify(search));
 
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
-      jobFiltered = jobFiltered.filter(
+      jobFiltered = jobs.filter(
         (job) =>
+          job.jobTitle.toLowerCase().includes(query) ||
           job.jobSkills.toLowerCase().includes(query) ||
           job?.company?.name.toLowerCase().includes(query) ||
           job.jobDescription.toLowerCase().includes(query)
@@ -62,8 +79,9 @@ const Home = () => {
       jobFiltered = jobFiltered.filter((job) => job.time === time);
     }
 
-    dispatch(setJobs(jobFiltered));
+    dispatch(setJobsResult(jobFiltered));
     dispatch(setJobSelected(jobFiltered[0]));
+    navigate(`/${jobFiltered[0]._id}`);
 
     if (!jobFiltered.length) {
       setJobNotFound(true);
@@ -79,8 +97,8 @@ const Home = () => {
         dataFilter={dataFilter}
         setDataFilter={setDataFilter}
       />
-      {jobs?.length ? (
-        <FilterData jobs={jobs} />
+      {jobsResult?.length ? (
+        <FilterData jobs={jobsResult} />
       ) : jobNotFound ? (
         <Box
           sx={{
@@ -148,8 +166,8 @@ const Home = () => {
                 style={{ height: 300, width: "auto", objectFit: "cover" }}
               />
               <Typography sx={{ fontSize: 20, pt: 5, textAlign: "center" }}>
-                Danh sách việc làm "chất" liên tục cập nhật các lựa chọn mới
-                nhất theo thị trường và xu hướng tìm kiếm.
+                Danh sách việc làm &quot;chất&quot; liên tục cập nhật các lựa
+                chọn mới nhất theo thị trường và xu hướng tìm kiếm.
               </Typography>
             </Box>
             <Box

@@ -7,9 +7,10 @@ import {
 } from "@mui/material";
 import { useDispatch } from "react-redux";
 import { setModal } from "../slice/companySlice";
+import { address } from "../actions/userAddress";
 
 const CompanyItem = (company) => {
-  const { name, address, image, scale, country, ot, website, social } = company;
+  const { name, image, scale, country, ot, website, social } = company;
 
   const dispatch = useDispatch();
   const handleUpdate = () => {
@@ -23,13 +24,14 @@ const CompanyItem = (company) => {
         alt="Company Logo"
         height="140"
         image={image}
+        sx={{ objectFit: "cover" }}
       />
       <CardContent>
         <Typography variant="h5" component="div">
           {name}
         </Typography>
         <Typography variant="body2" color="text.secondary">
-          Address: <b>{address}</b>
+          Address: <b>{address(company.address)}</b>
         </Typography>
         <Typography variant="body2" color="text.secondary">
           Scale: <b>{scale}km</b>
@@ -53,6 +55,7 @@ const CompanyItem = (company) => {
         onClick={handleUpdate}
         fullWidth
         sx={{ marginTop: "auto" }}
+        color="error"
       >
         View Details
       </Button>

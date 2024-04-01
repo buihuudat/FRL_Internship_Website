@@ -3,12 +3,7 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  notificationModal,
-  setJobApplied,
-  setJobSelected,
-  showModal,
-} from "../slice/jobSlice";
+import { notificationModal, setJobApplied, showModal } from "../slice/jobSlice";
 import {
   FormControl,
   FormControlLabel,
@@ -17,13 +12,10 @@ import {
   TextField,
 } from "@mui/material";
 import FileBase64 from "react-file-base64";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import {
-  useCvAppliedQuery,
-  useJobApplyMutation,
-  usePushNotificationMutation,
-} from "../api/user/userApi";
+import { notificationApi } from "../utils/api/notificationApi";
+import { userApi } from "../utils/api/userApi";
 
 const style = {
   position: "absolute",
@@ -42,7 +34,7 @@ const ApplyModal = () => {
   const [textMore, setTextMore] = useState("");
   const [nameOfUser, setNameOfUser] = useState("");
   const [options, setOptions] = useState("Sử dụng CV đã UpLoad");
-
+  const [cvApplied, setCvApplied] = useState(null);
   const [file, setFile] = useState({
     file: "",
     name: "",
@@ -52,9 +44,14 @@ const ApplyModal = () => {
   const data = useSelector((state) => state.job.modal.data);
   const user = useSelector((state) => state.user.user);
 
-  const [jobApply] = useJobApplyMutation();
-  const cvApplied = useCvAppliedQuery({ userId: user?._id });
-  const [pushNotification] = usePushNotificationMutation();
+  useEffect(() => {
+    const fetchData = async () => {
+      const cvApplied = await userApi.getCVapplied(user._id);
+      setCvApplied(cvApplied.user.file);
+    };
+    user?._id && fetchData();
+    setNameOfUser(user?.name);
+  }, [user]);
 
   const handleClose = () => {
     dispatch(showModal({ show: false, data: null }));
@@ -79,7 +76,7 @@ const ApplyModal = () => {
     if (dataApply.nameOfUser === "") return toast.error("Bạn chưa nhập tên");
 
     if (options === "Sử dụng CV đã UpLoad") {
-      if (cvApplied?.data) dataApply.file = cvApplied?.data?.user?.file;
+      if (cvApplied) dataApply.file = cvApplied;
     }
     if (dataApply.file.file === "") return toast.error("Chưa có CV");
 
@@ -90,13 +87,13 @@ const ApplyModal = () => {
     };
 
     await toast
-      .promise(jobApply(dataApply), {
+      .promise(userApi.jobApply(dataApply), {
         loading: "Đang gửi yêu cầu",
         success: "Gửi yêu cầu thành công",
         error: "Gửi yêu cầu thất bại",
       })
       .then(() => {
-        pushNotification(dataNoti);
+        notificationApi.updateNotification(dataNoti);
         handleClose();
         dispatch(notificationModal({ show: true, data }));
         dispatch(setJobApplied({ job: data, userId: user._id }));
@@ -137,7 +134,9 @@ const ApplyModal = () => {
                   <FormControlLabel
                     value="Sử dụng CV đã UpLoad"
                     control={<Radio />}
-                    label="Sử dụng CV đã UpLoad"
+                    label={`Sử dụng  ${
+                      cvApplied && cvApplied.name
+                    } CV đã upload`}
                   />
                   <Typography color={"error"} sx={{ ml: 4 }}>
                     {cvApplied?.data?.user?.file?.name}

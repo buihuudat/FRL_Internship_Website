@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
@@ -18,11 +18,26 @@ import {
 } from "@mui/material";
 import { data } from "../sources/data";
 import toast from "react-hot-toast";
-import {
-  useCreateJobMutation,
-  useGetCompanyQuery,
-  useUpdateJobMutation,
-} from "../api/admin/adminApi";
+import { address } from "../actions/userAddress";
+import { jobApi } from "../utils/api/jobApi";
+import CompanyAddress from "./CompanyAddress";
+
+const style = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: "56%",
+  bgcolor: "background.paper",
+  boxShadow: 24,
+  p: 4,
+  display: "flex",
+  flexDirection: "column",
+  borderRadius: 5,
+  gap: 2,
+  overflow: "auto",
+  maxHeight: "100%",
+};
 
 const JobModal = () => {
   const dataUpdate = useSelector((state) => state.job.createModal.data);
@@ -37,47 +52,37 @@ const JobModal = () => {
   );
   const [time, setTime] = useState("Toàn thời gian");
   const [company, setCompany] = useState(dataUpdate?.company?._id || undefined);
+  const [companyAuth, setCompanyAuth] = useState(dataUpdate?.job?.company);
+  const [isChangeAddress, setIsChangeAddress] = useState(false);
+  const [newAddress, setNewAddress] = useState(null);
 
-  const [createJob] = useCreateJobMutation();
-  const [updateJob] = useUpdateJobMutation();
-  const companyData = useGetCompanyQuery();
+  const open = useSelector((state) => state.job.createModal.show);
+  const user = useSelector((state) => state.user.user);
+  const companyData = useSelector((state) => state.company.companies);
+
+  useEffect(() => {
+    if (!dataUpdate?.job?.company && companyData.length)
+      setCompanyAuth(companyData.find((c) => c._id === company));
+  }, [dataUpdate, companyData, company]);
 
   const dispatch = useDispatch();
   const handleClose = () => {
     dispatch(setCreateModal({ show: false, data: null }));
   };
 
-  const open = useSelector((state) => state.job.createModal.show);
-
-  const style = {
-    position: "absolute",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-    width: "50%",
-    bgcolor: "background.paper",
-    boxShadow: 24,
-    p: 4,
-    display: "flex",
-    flexDirection: "column",
-    borderRadius: 5,
-    gap: 2,
-    overflow: "auto",
-    maxHeight: "100%",
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
     const data = {
+      author: user.role === "admin" ? companyAuth?.author : user._id,
       jobTitle: formData.get("jobTitle"),
       jobDescription: formData.get("jobDescription"),
       jobSkills: formData.get("jobSkills"),
-      jobLocation: formData.get("jobLocation"),
+      jobLocation: newAddress ?? companyAuth?.address,
       wotkingForm: form,
       salary,
       scale,
-      company,
+      company: companyAuth?._id || company,
       jobStatus: value,
       time,
       jobLocation_str,
@@ -87,14 +92,12 @@ const JobModal = () => {
       return toast.error("Tên công việc không hợp lệ");
     if (data.jobDescription.length < 10)
       return toast.error("Mô tả công việc không hợp lệ");
-    if (data.jobLocation.length < 10)
-      return toast.error("Địa điểm làm việc không hợp lệ");
 
     await toast
       .promise(
         dataUpdate
-          ? updateJob({ id: dataUpdate?.job?._id, job: data })
-          : createJob(data),
+          ? jobApi.updateJob({ ...data, _id: dataUpdate.job._id })
+          : jobApi.createJob(data),
         {
           loading: dataUpdate ? "Đang lưu" : "Đang tạo",
           success: dataUpdate ? "Cập nhật thành công" : "Tạo thành công",
@@ -107,13 +110,13 @@ const JobModal = () => {
   };
 
   return (
-    <div>
-      <Modal open={open} onClose={handleClose}>
-        <Box sx={style} component={"form"} onSubmit={handleSubmit}>
-          <Typography fontWeight={600} fontSize={25} align="center">
-            {dataUpdate ? "Cập nhật công việc" : "Thêm công việc mới"}
-          </Typography>
+    <Modal open={open} onClose={handleClose}>
+      <Box sx={style} component={"form"} onSubmit={handleSubmit}>
+        <Typography fontWeight={600} fontSize={25} align="center">
+          {dataUpdate ? "Cập nhật công việc" : "Thêm công việc mới"}
+        </Typography>
 
+        {user.role === "admin" && (
           <FormControl fullWidth>
             <InputLabel>Công ty</InputLabel>
             <Select
@@ -121,146 +124,150 @@ const JobModal = () => {
               label="Công ty"
               onChange={(e) => setCompany(e.target.value)}
             >
-              {companyData.data?.map((data, i) => (
+              {companyData?.map((data, i) => (
                 <MenuItem value={data._id} key={i}>
                   {data.name}
                 </MenuItem>
               ))}
             </Select>
           </FormControl>
+        )}
 
-          <TextField
-            label="Tên công việc"
-            defaultValue={dataUpdate?.job?.jobTitle}
-            name="jobTitle"
-            fullWidth
-            required
-          />
-          <TextField
-            label="Thông tin công việc"
-            name="jobDescription"
-            defaultValue={dataUpdate?.job?.jobDescription}
-            fullWidth
-            multiline
-            required
-            rows={3}
-          />
-          <TextField
-            label="Địa điểm làm việc"
-            defaultValue={dataUpdate?.job?.jobLocation}
-            name="jobLocation"
-            required
-          />
+        <TextField
+          label="Tên công việc"
+          defaultValue={dataUpdate?.job?.jobTitle}
+          name="jobTitle"
+          fullWidth
+          required
+        />
+        <TextField
+          label="Thông tin công việc"
+          name="jobDescription"
+          defaultValue={dataUpdate?.job?.jobDescription}
+          fullWidth
+          multiline
+          required
+          rows={3}
+        />
 
-          <TextField
-            label="Kỹ năng cần có"
-            name="jobSkills"
-            defaultValue={dataUpdate?.job?.jobSkills}
-            placeholder="React, Node, PHP, ..."
-            required
-          />
+        <TextField
+          label="Kỹ năng cần có"
+          name="jobSkills"
+          defaultValue={dataUpdate?.job?.jobSkills}
+          placeholder="React, Node, PHP, ..."
+          required
+        />
 
-          <Box sx={{ display: "flex", gap: 3, flexWrap: "wrap" }}>
-            <FormControl>
-              <FormLabel>Status</FormLabel>
-              <RadioGroup
-                value={value}
-                onChange={(e) => setValue(+e.target.value)}
-              >
-                <FormControlLabel
-                  value={0}
-                  control={<Radio />}
-                  label="Active"
-                />
-                <FormControlLabel
-                  value={1}
-                  control={<Radio />}
-                  label="No Active"
-                />
-              </RadioGroup>
-            </FormControl>
-
-            <FormControl sx={{ width: 150 }}>
-              <InputLabel>Hình thức làm việc</InputLabel>
-              <Select
-                value={form}
-                label="Hình thức làm việc"
-                onChange={(e) => setForm(e.target.value)}
-              >
-                {data.workForm.map((data, i) => (
-                  <MenuItem value={data.value} key={i}>
-                    {data.value}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-            <FormControl sx={{ width: 150 }}>
-              <InputLabel>Thời gian làm việc</InputLabel>
-              <Select
-                value={time}
-                label="Hình thức làm việc"
-                onChange={(e) => setTime(e.target.value)}
-              >
-                {data.time.map((data, i) => (
-                  <MenuItem value={data.value} key={i}>
-                    {data.value}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-            <FormControl sx={{ width: 150 }}>
-              <InputLabel>Khoảng cách</InputLabel>
-              <Select
-                value={scale}
-                label="Hình thức làm việc"
-                onChange={(e) => setScale(e.target.value)}
-              >
-                {data.scale.map((data, i) => (
-                  <MenuItem value={data.value} key={i}>
-                    {data.value}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
+        <Box sx={{ display: "flex", gap: 1 }}>
+          {isChangeAddress ? (
+            <CompanyAddress setInitialAddress={setNewAddress} />
+          ) : (
             <TextField
-              name="jobLocation_str"
-              placeholder="Nhập khoảng cách"
-              label="Khoảng cách"
-              defaultValue={dataUpdate?.job?.jobLocation_str || jobLocation_str}
-              onChange={(e) => setJobLocation_str(e.target.value)}
-            />
-            <FormControl sx={{ width: 150 }}>
-              <InputLabel>Mức lương</InputLabel>
-              <Select
-                value={salary}
-                label="Mức lương"
-                onChange={(e) => setSalary(e.target.value)}
-              >
-                {data.salary.map((data, i) => (
-                  <MenuItem value={data.value} key={i}>
-                    {data.value}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Box>
-
-          <Box sx={{ display: "flex", flexDirection: "column", gap: 2, pt: 2 }}>
-            <Button variant="contained" color="success" fullWidth type="submit">
-              Save
-            </Button>
-            <Button
-              variant="contained"
-              onClick={handleClose}
-              color="error"
+              disabled
+              value={
+                companyAuth?.address
+                  ? address(companyAuth?.address)
+                  : address(dataUpdate?.job?.jobLocation)
+              }
+              name="jobLocation"
+              required
               fullWidth
-            >
-              Hủy
-            </Button>
-          </Box>
+            />
+          )}
+          <Button onClick={() => setIsChangeAddress(!isChangeAddress)}>
+            {isChangeAddress ? "Cancel" : "Change"}
+          </Button>
         </Box>
-      </Modal>
-    </div>
+
+        <Box sx={{ display: "flex", gap: 3, flexWrap: "wrap" }}>
+          <FormControl>
+            <FormLabel>Status</FormLabel>
+            <RadioGroup
+              value={value}
+              onChange={(e) => setValue(+e.target.value)}
+            >
+              <FormControlLabel value={0} control={<Radio />} label="Active" />
+              <FormControlLabel
+                value={1}
+                control={<Radio />}
+                label="No Active"
+              />
+            </RadioGroup>
+          </FormControl>
+
+          <FormControl sx={{ width: 150 }}>
+            <InputLabel>Hình thức làm việc</InputLabel>
+            <Select
+              value={form}
+              label="Hình thức làm việc"
+              onChange={(e) => setForm(e.target.value)}
+            >
+              {data?.workForm.map((data, i) => (
+                <MenuItem value={data.value} key={i}>
+                  {data.value}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          <FormControl sx={{ width: 150 }}>
+            <InputLabel>Thời gian làm việc</InputLabel>
+            <Select
+              value={time}
+              label="Hình thức làm việc"
+              onChange={(e) => setTime(e.target.value)}
+            >
+              {data.time.map((data, i) => (
+                <MenuItem value={data.value} key={i}>
+                  {data.value}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          {/* <FormControl sx={{ width: 150 }}>
+            <InputLabel>Khoảng cách</InputLabel>
+            <Select
+              value={scale}
+              label="Hình thức làm việc"
+              onChange={(e) => setScale(e.target.value)}
+            >
+              {data.scale.map((data, i) => (
+                <MenuItem value={data.value} key={i}>
+                  {data.value}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl> */}
+          <FormControl sx={{ width: 150 }}>
+            <InputLabel>Mức lương</InputLabel>
+            <Select
+              value={salary}
+              label="Mức lương"
+              onChange={(e) => setSalary(e.target.value)}
+            >
+              {data.salary.map((data, i) => (
+                <MenuItem value={data.value} key={i}>
+                  {data.value}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </Box>
+
+        <Box sx={{ display: "flex", flexDirection: "column", gap: 2, pt: 2 }}>
+          <Button variant="contained" color="success" fullWidth type="submit">
+            Save
+          </Button>
+          <Button
+            variant="contained"
+            onClick={handleClose}
+            color="error"
+            fullWidth
+          >
+            Hủy
+          </Button>
+        </Box>
+      </Box>
+    </Modal>
   );
 };
 

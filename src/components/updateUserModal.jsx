@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setModal } from "../slice/userSlice";
 import {
   Avatar,
+  CircularProgress,
   Divider,
   FormControl,
   InputLabel,
@@ -12,13 +13,13 @@ import {
   Select,
   TextField,
 } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import FileBase64 from "react-file-base64";
 import toast from "react-hot-toast";
 import { LoadingButton } from "@mui/lab";
-
-import { useUpdateUserMutation } from "../api/admin/adminApi";
 import moment from "moment";
+import UserAddress from "./UserAddress";
+import { userApi } from "../utils/api/userApi";
 const style = {
   position: "absolute",
   top: "50%",
@@ -33,22 +34,25 @@ const style = {
 
 const UpdateUserModal = () => {
   const open = useSelector((state) => state.user.modal.show);
-  const user = useSelector((state) => state.user.modal.data);
+  const userData = useSelector((state) => state.user.modal.data);
 
+  const [user, setUser] = useState(userData);
   const [avatar, setAvatar] = useState(user?.avatar);
   const [gender, setGender] = useState(user?.gender);
   const [role, setRole] = useState(user?.role);
 
   const dispatch = useDispatch();
 
-  const [updateUser, { isLoading }] = useUpdateUserMutation();
+  useEffect(() => {
+    setUser(userData);
+  }, [userData]);
 
   const handleClose = () => {
     dispatch(setModal({ show: false, data: null }));
   };
 
   const handleChangeGender = () => {
-    if (user?.sex === "male") {
+    if (user.gender === "male") {
       setGender("female");
     } else {
       setGender("male");
@@ -59,11 +63,12 @@ const UpdateUserModal = () => {
     e.preventDefault();
     const formData = new FormData(e.target);
     const data = {
+      _id: user._id,
       username: user?.username,
       name: formData.get("name") || user?.name,
       email: formData.get("email") || user?.email,
       phone: formData.get("phone") || user?.phone,
-      address: formData.get("address") || user?.address,
+      address: user?.address,
       birthday: formData.get("birthday") || user?.birthday,
       description: formData.get("description") || user?.description,
       social: formData.get("social") || user?.social,
@@ -72,20 +77,14 @@ const UpdateUserModal = () => {
       role: role || user?.role,
     };
 
-    // if (data.name.length < 6) return toast.error("Tên không hợp lệ");
-    // if (data.email.length < 6) return toast.error("Email không hợp lệ");
-    // if (data.phone.length < 10 || data.phone.length > 11)
-    //   return toast.error("Số điện thoại không hợp lệ");
-    // if (data.phone.length < 10) return toast.error("Địa chỉ không hợp lệ");
-
     await toast
-      .promise(updateUser(data), {
+      .promise(userApi.updateUserById(data), {
         loading: "Đang cập nhật",
         success: "Cập nhật thành công",
         error: "Cập nhật thất bại",
       })
       .then(() => {
-        handleClose();
+        window.location.reload();
       });
   };
 
@@ -99,13 +98,13 @@ const UpdateUserModal = () => {
     : "";
 
   return (
-    <div>
-      <Modal
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
+    <Modal
+      open={open}
+      onClose={handleClose}
+      aria-labelledby="modal-modal-title"
+      aria-describedby="modal-modal-description"
+    >
+      {user ? (
         <Box sx={style} component={"form"} onSubmit={handleSubmit}>
           <Typography fontSize={25} fontWeight={600}>
             Cập nhật người dùng
@@ -155,7 +154,7 @@ const UpdateUserModal = () => {
             }}
           >
             <TextField
-              label="Họ và tên"
+              label="Tên"
               required
               defaultValue={user?.name}
               name="name"
@@ -196,23 +195,19 @@ const UpdateUserModal = () => {
                 <MenuItem value={"other"}>Khác</MenuItem>
               </Select>
             </FormControl>
-            <TextField
-              label="Địa chỉ"
-              required
-              name="address"
-              defaultValue={user?.address}
-              sx={{ width: "45%" }}
-            />
+
             <TextField
               label="Link cá nhân"
               required
               name="social"
               defaultValue={user?.social}
-              sx={{ width: "45%" }}
+              fullWidth
             />
           </Box>
+
+          <UserAddress user={user} setUser={setUser} />
           <Box>
-            <Typography fontWeight={600}>Giới thiệu bản thân</Typography>
+            <Typography fontWeight={600}>Giới thiệu</Typography>
             <Divider />
             <TextField
               multiline
@@ -230,12 +225,12 @@ const UpdateUserModal = () => {
               onChange={(e) => setRole(e.target.value)}
             >
               <MenuItem value={"admin"}>Admin</MenuItem>
+              <MenuItem value={"company"}>Company</MenuItem>
               <MenuItem value={"user"}>User</MenuItem>
             </Select>
           </FormControl>
 
           <LoadingButton
-            loading={isLoading}
             fullWidth
             variant="contained"
             sx={{ mt: 1 }}
@@ -245,8 +240,10 @@ const UpdateUserModal = () => {
             Cập nhật
           </LoadingButton>
         </Box>
-      </Modal>
-    </div>
+      ) : (
+        <CircularProgress />
+      )}
+    </Modal>
   );
 };
 

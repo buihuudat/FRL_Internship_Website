@@ -12,15 +12,14 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useLoginMutation } from "../../api/user/authApi";
 import { LoadingButton } from "@mui/lab";
 import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { setUser } from "../../slice/userSlice";
+import { authApi } from "../../utils/api/authApi";
 
 const Login = () => {
   const [showPass, setShowPass] = useState(false);
-  const [login, { isLoading }] = useLoginMutation();
   const [checked, setChecked] = useState(false);
 
   const dispatch = useDispatch();
@@ -34,15 +33,18 @@ const Login = () => {
       password: formData.get("password"),
     };
 
-    const result = await login(data);
-    if (result.error && result.error.data) {
-      toast.error(result.error?.data?.message);
-    }
-    if (result.data && result.data.message) {
-      toast.success(result.data.message);
-      localStorage.setItem("token", result.data.token);
-      dispatch(setUser(result.data.user));
+    try {
+      const result = await toast.promise(authApi.login(data), {
+        loading: "Đang đăng nhập",
+        success: "Đăng nhập thành công",
+        error: (err) => err.response.data.message,
+      });
+
+      localStorage.setItem("token", result.token);
+      dispatch(setUser(result.user));
       navigate("/");
+    } catch (error) {
+      toast.error("Đăng nhập thất bại");
     }
   };
 
@@ -120,7 +122,6 @@ const Login = () => {
         <LoadingButton
           fullWidth
           variant="contained"
-          loading={isLoading}
           sx={{ background: "#1B2543" }}
           type="submit"
         >

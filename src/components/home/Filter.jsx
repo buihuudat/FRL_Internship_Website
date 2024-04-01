@@ -10,6 +10,7 @@ import {
 } from "@mui/material";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import { data } from "../../sources/data";
+import { useSelector } from "react-redux";
 
 const SelectActions = ({
   name,
@@ -54,6 +55,10 @@ const Filter = ({
   dataFilter,
   setDataFilter,
 }) => {
+  const companyAuthor = useSelector((state) => state.company.companyAuthor);
+  const searchHistory = JSON.parse(localStorage.getItem("search")) ?? [];
+  const user = useSelector((state) => state.user.user);
+
   return (
     <Box
       sx={{
@@ -80,7 +85,7 @@ const Filter = ({
       >
         <LocationOnIcon sx={{ color: "black", fontSize: "16" }} />
         <Typography color={"black"} fontWeight={600} fontSize={25}>
-          ABC
+          {companyAuthor?.name ?? "ABC"}
         </Typography>
       </Button>
       <Box
@@ -90,14 +95,60 @@ const Filter = ({
           flexWrap: "wrap",
           gap: 5,
           flex: 1,
+          justifyContent: "space-between",
         }}
       >
-        <TextField
-          placeholder="Nhập từ khóa kỹ năng, công ty,..."
-          onChange={(e) => setSearchQuery(e.target.value)}
-          value={searchQuery}
-          sx={{ width: "63%", backgroundColor: "white", borderRadius: 2 }}
-        />
+        <Box
+          sx={{
+            width: "100%",
+            backgroundColor: "white",
+            borderRadius: 2,
+            position: "relative",
+          }}
+        >
+          <TextField
+            placeholder="Nhập từ khóa kỹ năng, công ty,..."
+            onChange={(e) => setSearchQuery(e.target.value)}
+            value={searchQuery}
+            fullWidth
+          />
+          {searchHistory?.length && searchQuery !== "" ? (
+            <Box
+              sx={{
+                position: "absolute",
+                top: 50,
+                background: "white",
+                width: "100%",
+                borderBottomLeftRadius: 5,
+                borderBottomRightRadius: 5,
+                padding: 1,
+                zIndex: 10,
+                border: "1px solid gray",
+                display: "flex",
+                flexDirection: "row",
+                gap: 1,
+                flexWrap: "wrap",
+              }}
+            >
+              {searchHistory?.slice(0, 10).map((search, i) => (
+                <Typography
+                  key={i}
+                  sx={{
+                    paddingX: 1,
+                    border: "1px solid gray",
+                    borderRadius: 4,
+                    cursor: "pointer",
+                  }}
+                  color={"#555"}
+                  fontSize={12}
+                  onClick={() => setSearchQuery(search)}
+                >
+                  {search}
+                </Typography>
+              ))}
+            </Box>
+          ) : null}
+        </Box>
         <SelectActions
           name="Mức lương"
           keyName="salary"
@@ -105,13 +156,15 @@ const Filter = ({
           dataFilter={dataFilter}
           setDataFilter={setDataFilter}
         />
-        <SelectActions
-          name="Khoảng cách"
-          data={data.scale}
-          dataFilter={dataFilter}
-          setDataFilter={setDataFilter}
-          keyName={"scale"}
-        />
+        {/* {user ? (
+          <SelectActions
+            name="Khoảng cách"
+            data={data.scale}
+            dataFilter={dataFilter}
+            setDataFilter={setDataFilter}
+            keyName={"scale"}
+          />
+        ) : null} */}
         <SelectActions
           name="Hình thức làm việc"
           data={data.workForm}

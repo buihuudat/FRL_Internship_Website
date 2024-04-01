@@ -13,15 +13,14 @@ import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import PersonIcon from "@mui/icons-material/Person";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useRegisterMutation } from "../../api/user/authApi";
 import { LoadingButton } from "@mui/lab";
 import toast from "react-hot-toast";
+import { authApi } from "../../utils/api/authApi";
 
 const Register = () => {
   const [showPass, setShowPass] = useState(false);
   const [isDisable, setIsDisable] = useState(true);
   const [showConfirmPass, setShowConfirmPass] = useState(false);
-  const [register, { isLoading }] = useRegisterMutation();
 
   const navigate = useNavigate();
 
@@ -69,13 +68,15 @@ const Register = () => {
 
     if (err) return;
 
-    const result = await register(data);
-    if (result?.error?.data && result.error?.data?.message) {
-      toast.error(result.error?.data?.message);
-    }
-    if (result?.data && result.data.message) {
-      toast.success(result.data.message);
+    try {
+      await toast.promise(authApi.signup(data), {
+        loading: "Đang đăng ký",
+        success: "Đăng ký thành công",
+        error: (err) => err.response.data.message,
+      });
       navigate("/dang-nhap");
+    } catch (error) {
+      toast.error("Đăng ký thất bại");
     }
   };
 
@@ -195,7 +196,6 @@ const Register = () => {
         />
 
         <LoadingButton
-          loading={isLoading}
           disabled={isDisable}
           fullWidth
           variant="contained"

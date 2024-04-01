@@ -1,6 +1,9 @@
-import { Box, Modal, Paper, Typography } from "@mui/material";
+import { Box, Button, Modal, Paper, Typography } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
-import { setAppliedModal } from "../slice/jobSlice";
+import { setAppliedModal, setViewDetailCV } from "../slice/jobSlice";
+import moment from "moment";
+import { jobApi } from "../utils/api/jobApi";
+import { notificationApi } from "../utils/api/notificationApi";
 
 const style = {
   position: "absolute",
@@ -26,6 +29,26 @@ const JobAppliedModal = () => {
   const handleClose = () => {
     dispatch(setAppliedModal({ show: false }));
   };
+  const { companyAuthor } = useSelector((state) => state.company);
+
+  const handleViewDetail = async (data) => {
+    const dataNoti = {
+      userId: data?.user?._id,
+      companyName: companyAuthor?.name,
+      jobTitle: data?.job?.jobTitle,
+      viewed: true,
+    };
+    try {
+      if (!data?.viewed) {
+        await notificationApi.updateNotification(dataNoti);
+      }
+      await jobApi.updateViewCV(data._id);
+      dispatch(setViewDetailCV({ open: true, data }));
+      handleClose();
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <Modal open={open} onClose={handleClose}>
@@ -39,7 +62,9 @@ const JobAppliedModal = () => {
               elevation={9}
               sx={{ p: 3, display: "flex", flexDirection: "column" }}
             >
-              <b>Nội dung thư ứng tuyển: </b> {d?.textMore}
+              <Typography>
+                Ngày ứng tuyển: {moment(d.createdAt).format("lll")}
+              </Typography>
               <a
                 style={{
                   backgroundColor: "rgba(255,255,255",
@@ -50,6 +75,9 @@ const JobAppliedModal = () => {
               >
                 {d?.file?.name}
               </a>
+              <Button sx={{ mt: 2 }} onClick={() => handleViewDetail(d)}>
+                Xem chi tiết
+              </Button>
             </Paper>
           </Box>
         ))}

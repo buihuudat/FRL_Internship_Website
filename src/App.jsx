@@ -4,6 +4,7 @@ import { router } from "./routes";
 import { Provider } from "react-redux";
 import { store } from "./store";
 import { Toaster } from "react-hot-toast";
+import "rsuite/Rate/styles/index.css";
 
 const App = () => {
   const theme = createTheme({

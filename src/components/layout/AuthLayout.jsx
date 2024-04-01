@@ -2,25 +2,35 @@ import { Outlet, useNavigate } from "react-router-dom";
 import Navbar from "../navbar/Navbar";
 import Footer from "../footer/Footer";
 import { Box, LinearProgress } from "@mui/material";
-import { useEffect } from "react";
-import { useCheckAuthMutation } from "../../api/user/userApi";
+import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { setUser } from "../../slice/userSlice";
+import { authApi } from "../../utils/api/authApi";
+import { notificationApi } from "../../utils/api/notificationApi";
+import { setNotifications } from "../../slice/notification";
 
 const AuthLayout = () => {
-  const [checkAuth, { isLoading }] = useCheckAuthMutation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const checkUser = async () => {
-    const result = await checkAuth();
-    if (!result.data) return navigate("/");
-    dispatch(setUser(result.data.user));
-  };
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    const checkUser = async () => {
+      try {
+        const result = await authApi.checkAuth();
+        if (!result.user) return navigate("/");
+        const notifications = await notificationApi.getNotifications();
+        notifications && dispatch(setNotifications(notifications));
+        dispatch(setUser(result.user));
+        setIsLoading(false);
+      } catch (error) {
+        return navigate("/");
+      }
+    };
     checkUser();
-  }, []);
+  }, [dispatch, navigate]);
+
   return isLoading ? (
     <LinearProgress />
   ) : (

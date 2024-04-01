@@ -5,24 +5,41 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import { useGetUsersQuery } from "../../api/admin/adminApi";
 import EditNoteIcon from "@mui/icons-material/EditNote";
-import { IconButton } from "@mui/material";
-import { useDispatch } from "react-redux";
+import { IconButton, LinearProgress } from "@mui/material";
+import { useDispatch, useSelector } from "react-redux";
 import { setModal } from "../../slice/userSlice";
 import moment from "moment";
 import UpdateUserModal from "../../components/updateUserModal";
+import { useEffect, useState } from "react";
+import { userApi } from "../../utils/api/userApi";
 
 export default function Users() {
-  const { data, isLoading } = useGetUsersQuery();
-
   const dispatch = useDispatch();
   const handleEdit = (user) => {
     dispatch(setModal({ show: true, data: user }));
   };
 
+  const modal = useSelector((state) => state.user.modal);
+
+  const [users, setUsers] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const getUsers = async () => {
+      try {
+        const data = await userApi.getUsers();
+        setUsers(data);
+      } catch (error) {
+        console.log(error);
+      }
+      setIsLoading(false);
+    };
+    getUsers();
+  }, []);
+
   return isLoading ? (
-    <linearGradient />
+    <LinearProgress color="error" />
   ) : (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -38,8 +55,8 @@ export default function Users() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {data?.length &&
-            data.map((user) => (
+          {users?.length &&
+            users.map((user) => (
               <TableRow
                 key={user.name}
                 sx={{ "&:last-child td, &:last-child th": { border: 0 } }}

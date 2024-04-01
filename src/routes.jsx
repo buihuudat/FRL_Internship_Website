@@ -10,6 +10,15 @@ import Users from "./pages/admin/Users";
 import Jobs from "./pages/admin/Jobs";
 import Company from "./pages/admin/Company";
 import CompanyPage from "./pages/Company";
+import FAQ from "./pages/FAQ";
+import Support from "./pages/Support";
+import AdminFAQ from "./pages/admin/FAQ";
+import Payment from "./pages/admin/Payment";
+import MomoThank from "./pages/MomoThank";
+import PayPalThank from "./pages/PayPalThank";
+import Custom from "./pages/admin/Custom";
+import SendEmail from "./pages/Company/SendEmail";
+import JobsApplied from "./pages/JobsApplied";
 
 export const router = createBrowserRouter([
   {
@@ -22,15 +31,32 @@ export const router = createBrowserRouter([
         element: <Home />,
       },
       {
-        path: "/:name",
-        index: true,
+        path: "/:id",
         element: <Home />,
       },
-
+      {
+        path: "/cau-hoi-thuong-gap",
+        element: <FAQ />,
+      },
+      {
+        path: "/huong-dan-su-dung",
+        element: <Support />,
+      },
+      {
+        path: "/momo/thankyou",
+        element: <MomoThank />,
+      },
+      {
+        path: "/paypal/thankyou",
+        element: <PayPalThank />,
+      },
       {
         path: "/company/:id",
-        index: true,
         element: <CompanyPage />,
+      },
+      {
+        path: "/company/:id/send-email",
+        element: <SendEmail />,
       },
       {
         path: "/dang-nhap",
@@ -50,6 +76,10 @@ export const router = createBrowserRouter([
         path: "/tai-khoan",
         element: <Profile />,
       },
+      {
+        path: "/da-ung-tuyen",
+        element: <JobsApplied />,
+      },
     ],
   },
   {
@@ -67,6 +97,18 @@ export const router = createBrowserRouter([
       {
         path: "/admin/company",
         element: <Company />,
+      },
+      {
+        path: "/admin/faq",
+        element: <AdminFAQ />,
+      },
+      {
+        path: "/admin/payment",
+        element: <Payment />,
+      },
+      {
+        path: "/admin/customer",
+        element: <Custom />,
       },
     ],
   },

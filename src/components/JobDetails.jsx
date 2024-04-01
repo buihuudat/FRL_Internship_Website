@@ -1,23 +1,37 @@
-import { Avatar, Box, Button, Divider, Typography } from "@mui/material";
+import {
+  Avatar,
+  Box,
+  Button,
+  CircularProgress,
+  Divider,
+  Typography,
+} from "@mui/material";
 
 import CurrencyExchangeIcon from "@mui/icons-material/CurrencyExchange";
-import LocationOnIcon from "@mui/icons-material/LocationOn";
 import ApartmentIcon from "@mui/icons-material/Apartment";
 import AccessAlarmIcon from "@mui/icons-material/AccessAlarm";
 import { useDispatch, useSelector } from "react-redux";
 import { showModal } from "../slice/jobSlice";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { jobApi } from "../utils/api/jobApi";
+import { address } from "../actions/userAddress";
+import { getGeocoding } from "../actions/getGeocoding";
+import { getDistance } from "../actions/getDistance";
+import SocialDistanceIcon from "@mui/icons-material/SocialDistance";
 
 const Skill = ({ name }) => {
   return (
     <Typography
       sx={{
         px: 1,
+        pt: 0.3,
         borderRadius: 20,
         width: "max-content",
-        border: "1px solid #000",
+        border: "1px solid gray",
+        fontWeight: 600,
+        color: "gray",
       }}
     >
       {name}
@@ -28,23 +42,55 @@ const JobDetails = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const user = useSelector((state) => state.user.user);
-  const jobSelected = useSelector((state) => state.job.jobSelected);
+  const { jobSelected, modal } = useSelector((state) => state.job);
 
-  const [showFull, setShowFull] = useState(false);
-
-  const isApplied = useMemo(
-    () => jobSelected?.jobApplied.find((j) => j.userId === user._id),
-    [jobSelected, user?._id]
+  const [showFull, setShowFull] = useState(
+    () => jobSelected.jobDescription > 200
   );
+
+  const [jobApplied, setJobApplied] = useState([]);
+  const [geo1, setGeo1] = useState(null);
+  const [geo2, setGeo2] = useState(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await jobApi.cvApplied(jobSelected._id);
+      setJobApplied(data);
+    };
+    fetchData();
+  }, [jobSelected._id]);
+
+  useEffect(() => {
+    if (jobSelected.company && jobSelected.company.address) {
+      getGeocoding(
+        address({ ...jobSelected.company.address, street: "" })
+      ).then((data) => setGeo1([data.lat, data.lon]));
+    }
+    if (user && user.address) {
+      getGeocoding(address({ ...user.address, street: null })).then((data) =>
+        setGeo2([data.lat, data.lon])
+      );
+    }
+  }, [jobSelected, user, modal]);
+
+  const isApplied =
+    useMemo(() => {
+      const thisJob = jobApplied.find((j) => j.user?._id === user?._id);
+      if (!thisJob) return false;
+      return true;
+    }, [jobApplied, user?._id]) || null;
 
   const handleApply = () => {
     if (!user) return toast.error("Bạn chưa đăng nhập");
     dispatch(showModal({ show: true, data: jobSelected }));
   };
 
-  console.log(jobSelected);
+  const distance = useMemo(() => {
+    if (!geo1 || !geo2) return null;
+    return getDistance(geo1, geo2);
+  }, [geo1, geo2]);
 
-  return jobSelected ? (
+  return jobSelected && jobApplied ? (
     <Box
       sx={{
         border: "2px solid #999",
@@ -80,7 +126,7 @@ const JobDetails = () => {
               alignItems: "center",
             }}
           >
-            <CurrencyExchangeIcon />
+            <CurrencyExchangeIcon color="warning" />
             <Typography fontWeight={600} fontSize={20}>
               {jobSelected.salary}
             </Typography>
@@ -94,14 +140,14 @@ const JobDetails = () => {
         fullWidth
         sx={{ p: 1, fontSize: 25, borderRadius: 5, mt: 4 }}
         onClick={handleApply}
-        disabled={isApplied}
+        disabled={isApplied === true || isApplied === null}
       >
-        {isApplied ? "Bạn đã ứng tuyển" : "  Ứng tuyển"}
+        {isApplied === true ? "Bạn đã ứng tuyển" : "  Ứng tuyển"}
       </Button>
 
       <Divider sx={{ height: 2, py: 2 }} />
 
-      <Box>
+      <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
         <Box
           sx={{
             display: "flex",
@@ -110,9 +156,9 @@ const JobDetails = () => {
             gap: 1,
           }}
         >
-          <LocationOnIcon color="error" sx={{ fontSize: 30 }} />
+          <SocialDistanceIcon color="error" sx={{ fontSize: 30 }} />
           <Typography color={"red"} fontWeight={600}>
-            {jobSelected?.jobLocation_str} km
+            {distance ? distance : <CircularProgress color="error" size={20} />}
           </Typography>
         </Box>
         <Box
@@ -124,7 +170,9 @@ const JobDetails = () => {
           }}
         >
           <ApartmentIcon sx={{ fontSize: 30 }} />
-          <Typography fontWeight={600}>{jobSelected.jobLocation}</Typography>
+          <Typography fontWeight={600}>
+            {address(jobSelected.jobLocation)}
+          </Typography>
         </Box>
         <Box
           sx={{
@@ -203,10 +251,10 @@ const JobDetails = () => {
             Thông tin chi tiết
           </Typography>
           <Typography>
-            {showFull
+            {!showFull
               ? jobSelected?.jobDescription
               : jobSelected?.jobDescription?.slice(0, 200) + "..."}
-            {
+            {jobSelected?.jobDescription.length > 200 ? (
               <a
                 onClick={() => setShowFull(!showFull)}
                 style={{
@@ -218,7 +266,7 @@ const JobDetails = () => {
               >
                 {!showFull ? "Hiện thêm" : "Ẩn bớt"}
               </a>
-            }
+            ) : null}
           </Typography>
         </Box>
       </Box>

@@ -11,6 +11,7 @@ import { setModal } from "../../slice/userSlice";
 import ProfileModal from "../../components/ProfileModal";
 import moment from "moment";
 import { useState } from "react";
+import { address } from "../../actions/userAddress";
 
 const Profile = () => {
   const { user } = useSelector((state) => state.user);
@@ -103,7 +104,7 @@ const Profile = () => {
               </Box>
               <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                 <LocationOnIcon color="error" />
-                <Typography>{user?.address}</Typography>
+                <Typography>{address(user?.address)}</Typography>
               </Box>
             </Box>
             <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
@@ -128,19 +129,25 @@ const Profile = () => {
         >
           <Typography fontWeight={600}>Giới thiệu bản thân</Typography>
           <Divider />
-          <Typography>
-            {showFull
-              ? user?.description
-              : user?.description?.slice(0, 100) + "..."}
-            {
-              <a
-                onClick={() => setShowFull(!showFull)}
-                style={{ color: "blue", fontWeight: "bold", cursor: "pointer" }}
-              >
-                {!showFull ? "Hiện thêm" : "Ẩn bớt"}
-              </a>
-            }
-          </Typography>
+          {user?.description && (
+            <Typography>
+              {showFull
+                ? user?.description
+                : user?.description?.slice(0, 100) + "..."}
+              {
+                <a
+                  onClick={() => setShowFull(!showFull)}
+                  style={{
+                    color: "blue",
+                    fontWeight: "bold",
+                    cursor: "pointer",
+                  }}
+                >
+                  {!showFull ? "Hiện thêm" : "Ẩn bớt"}
+                </a>
+              }
+            </Typography>
+          )}
         </Box>
       </Box>
       <ProfileModal />

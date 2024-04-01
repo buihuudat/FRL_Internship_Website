@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   jobs: [],
+  jobsResult: [],
   modal: {
     show: false,
     data: null,
@@ -16,6 +17,10 @@ const initialState = {
   },
   jobSelected: null,
   appliedModal: {
+    open: false,
+    data: null,
+  },
+  viewDetailCV: {
     open: false,
     data: null,
   },
@@ -34,6 +39,9 @@ const jobSlice = createSlice({
     setJobs: (state, action) => {
       state.jobs = action.payload;
     },
+    setJobsResult: (state, action) => {
+      state.jobsResult = action.payload;
+    },
     setCreateModal: (state, action) => {
       state.createModal = action.payload;
     },
@@ -43,13 +51,14 @@ const jobSlice = createSlice({
     setAppliedModal: (state, action) => {
       state.appliedModal = action.payload;
     },
+    setViewDetailCV: (state, action) => {
+      state.viewDetailCV = action.payload;
+    },
     setJobApplied: (state, action) => {
       const dataApply = action.payload.job;
-      const userId = action.payload.userId;
 
       const dataUpdated = {
         ...dataApply,
-        jobApplied: [...dataApply.jobApplied, { userId }],
       };
       state.jobSelected = dataUpdated;
       const index = state.jobs.findIndex((j) => j._id === dataApply._id);
@@ -68,5 +77,7 @@ export const {
   setJobSelected,
   setAppliedModal,
   setJobApplied,
+  setJobsResult,
+  setViewDetailCV,
 } = jobSlice.actions;
 export default jobSlice.reducer;

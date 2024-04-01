@@ -1,23 +1,48 @@
-import { Avatar, Box, Button, Divider, Paper, Typography } from "@mui/material";
-import LocationOnIcon from "@mui/icons-material/LocationOn";
+import {
+  Avatar,
+  Box,
+  Button,
+  CircularProgress,
+  Divider,
+  Paper,
+  Typography,
+} from "@mui/material";
 import ApartmentIcon from "@mui/icons-material/Apartment";
 import CurrencyExchangeIcon from "@mui/icons-material/CurrencyExchange";
-import { useDeleteJobMutation } from "../api/admin/adminApi";
 import { useLocation, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   setAppliedModal,
   setCreateModal,
   setJobSelected,
 } from "../slice/jobSlice";
+import { jobApi } from "../utils/api/jobApi";
+import { useEffect, useState } from "react";
+import { permissionAccess } from "../resources/data";
+import { address } from "../actions/userAddress";
 
 const JobItem = (job) => {
   const { pathname } = useLocation();
   const company = job?.company;
+  const user = useSelector((state) => state.user.user);
 
-  const [deleteJob] = useDeleteJobMutation();
+  const [jobApplied, setJobApplied] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    if (permissionAccess.includes(user?.role)) {
+      const fetchData = async () => {
+        const data = await jobApi.cvApplied(job._id);
+        setJobApplied(data);
+        setIsLoading(false);
+      };
+      fetchData();
+    }
+  }, [user?.role, job._id]);
+
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const Skill = ({ skill }) => {
     return (
@@ -35,7 +60,7 @@ const JobItem = (job) => {
   };
 
   const handleDelete = async () => {
-    await toast.promise(deleteJob(job._id), {
+    await toast.promise(jobApi.deleteJob(job._id), {
       loading: "Đang xóa công việc",
       success: "Xóa công việc thành công",
       error: "Xóa công việc thất bại",
@@ -54,8 +79,6 @@ const JobItem = (job) => {
     );
   };
 
-  const navigate = useNavigate();
-
   const handleViewJob = () => {
     navigate(`/${job._id}`);
     dispatch(setJobSelected(job));
@@ -65,7 +88,7 @@ const JobItem = (job) => {
   };
 
   const handleViewUserApplied = () => {
-    dispatch(setAppliedModal({ open: true, data: job?.jobApplied }));
+    dispatch(setAppliedModal({ open: true, data: jobApplied }));
   };
 
   return (
@@ -119,7 +142,7 @@ const JobItem = (job) => {
             gap: 1,
           }}
         >
-          <Box
+          {/* <Box
             sx={{
               display: "flex",
               flexDirection: "row",
@@ -131,7 +154,7 @@ const JobItem = (job) => {
             <Typography color={"red"} fontWeight={600}>
               {job?.jobLocation_str || 0} km
             </Typography>
-          </Box>
+          </Box> */}
           <Box
             sx={{
               display: "flex",
@@ -141,7 +164,7 @@ const JobItem = (job) => {
             }}
           >
             <ApartmentIcon />
-            <Typography fontWeight={600}>{job.jobLocation}</Typography>
+            <Typography fontWeight={600}>{address(job.jobLocation)}</Typography>
           </Box>
           <Box
             sx={{
@@ -180,14 +203,18 @@ const JobItem = (job) => {
               Update
             </Button>
           </Box>
-          <Button
-            flex={1}
-            variant="outlined"
-            color="success"
-            onClick={handleViewUserApplied}
-          >
-            View {job.jobApplied.length} User Applied
-          </Button>
+          {isLoading ? (
+            <CircularProgress sx={{ m: "auto" }} />
+          ) : (
+            <Button
+              flex={1}
+              variant="outlined"
+              color="success"
+              onClick={handleViewUserApplied}
+            >
+              View {jobApplied.length} User Applied
+            </Button>
+          )}
         </Box>
       )}
     </Paper>

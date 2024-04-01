@@ -19,7 +19,11 @@ const Popup = () => {
       <SpeedDial
         onClick={handleCreateCompany}
         ariaLabel="SpeedDial basic example"
-        sx={{ position: "absolute", bottom: 16, right: 16 }}
+        sx={{
+          position: "absolute",
+          bottom: 16,
+          right: 16,
+        }}
         icon={<SpeedDialIcon />}
       ></SpeedDial>
     </Box>

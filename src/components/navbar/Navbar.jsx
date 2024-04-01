@@ -17,18 +17,24 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { setUser } from "../../slice/userSlice";
 import moment from "moment";
-import { useGetNotificationsQuery } from "../../api/user/userApi";
+import { permissionAccess } from "../../resources/data";
+import { setNotifications } from "../../slice/notification";
+import toast from "react-hot-toast";
+import { notificationApi } from "../../utils/api/notificationApi";
 
 const Navbar = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [showNoti, setShowNoti] = useState(false);
+
+  const { notifications } = useSelector(
+    (state) => state.notification.notifications
+  );
+
   const open = Boolean(anchorEl);
   const user = useSelector((state) => state.user.user);
 
   const navigate = useNavigate();
-  const { data } = useGetNotificationsQuery({ userId: user?._id });
-
-  const notifications = data?.notifications?.notifications;
+  const dispatch = useDispatch();
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -42,12 +48,26 @@ const Navbar = () => {
     handleClose();
   };
 
-  const dispatch = useDispatch();
   const handleLogout = () => {
-    sessionStorage.removeItem("token");
+    localStorage.removeItem("token");
     localStorage.removeItem("user");
+    localStorage.removeItem("search");
     dispatch(setUser(null));
-    navigate("/");
+    dispatch(setNotifications([]));
+    window.location.href = "/";
+  };
+
+  const handleCheckAll = async () => {
+    try {
+      await toast.promise(notificationApi.checkAll(), {
+        loading: "Đang xử lý...",
+        success: ({ message }) => message,
+        error: "Xử lý thất bại",
+      });
+      setShowNoti(false);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -105,18 +125,26 @@ const Navbar = () => {
                 "aria-labelledby": "basic-button",
               }}
             >
-              {user?.role === "admin" && (
+              {permissionAccess.includes(user?.role) && (
                 <MenuItem onClick={() => navigate("admin/jobs")}>
                   Dashboard
                 </MenuItem>
               )}
               <MenuItem onClick={viewProfile}>Tài khoản</MenuItem>
+              <MenuItem onClick={() => navigate("/da-ung-tuyen")}>
+                Hồ sơ đã ứng tuyển
+              </MenuItem>
               <MenuItem onClick={handleLogout}>Logout</MenuItem>
             </Menu>
           </Box>
 
           <IconButton onClick={() => setShowNoti(!showNoti)}>
-            <Badge badgeContent={notifications?.length} color="error">
+            <Badge
+              badgeContent={
+                notifications?.filter((n) => n.viewed !== true)?.length
+              }
+              color="error"
+            >
               <NotificationsIcon sx={{ color: "white" }} />
             </Badge>
           </IconButton>
@@ -131,18 +159,11 @@ const Navbar = () => {
           }}
         >
           <Button
-            variant="outlined"
-            sx={{ color: "white", width: 120 }}
+            variant="text"
+            sx={{ color: "white", width: 120, fontWeight: "600" }}
             onClick={() => navigate("/dang-nhap")}
           >
             Đăng nhập
-          </Button>
-          <Button
-            variant="outlined"
-            sx={{ color: "white", width: 120 }}
-            onClick={() => navigate("/dang-ky")}
-          >
-            Đăng Ký
           </Button>
         </Box>
       )}
@@ -170,6 +191,15 @@ const Navbar = () => {
           >
             <Typography fontWeight={600} fontSize={18}>
               Thông báo
+            </Typography>
+            <Typography
+              fontWeight={600}
+              fontSize={18}
+              color={"blue"}
+              sx={{ cursor: "pointer" }}
+              onClick={handleCheckAll}
+            >
+              Đánh dấu đã đọc
             </Typography>
           </Box>
           <Divider />

@@ -1,25 +1,30 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  company: [],
+  companies: [],
   modal: {
     show: false,
     data: null,
   },
+  companyAuthor: null,
 };
 
 const companySlice = createSlice({
   name: "company",
   initialState,
   reducers: {
-    setCompany: (state, action) => {
-      state.company = action.payload;
+    setCompanies: (state, action) => {
+      state.companies = action.payload;
     },
     setModal: (state, action) => {
       state.modal = action.payload;
     },
+    setCompanyAuthor: (state, action) => {
+      state.companyAuthor = action.payload;
+    },
   },
 });
 
-export const { setCompany, setModal } = companySlice.actions;
+export const { setCompanies, setModal, setCompanyAuthor } =
+  companySlice.actions;
 export default companySlice.reducer;
