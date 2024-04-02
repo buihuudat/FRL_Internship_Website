@@ -11,6 +11,9 @@ import {
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import { data } from "../../sources/data";
 import { useSelector } from "react-redux";
+import { getCurrentAddress } from "../../actions/getCurrentAddress";
+import { userApi } from "../../utils/api/userApi";
+import toast from "react-hot-toast";
 
 const SelectActions = ({
   name,
@@ -55,9 +58,34 @@ const Filter = ({
   dataFilter,
   setDataFilter,
 }) => {
-  const companyAuthor = useSelector((state) => state.company.companyAuthor);
   const searchHistory = JSON.parse(localStorage.getItem("search")) ?? [];
   const user = useSelector((state) => state.user.user);
+
+  const handleGetCurrentAddress = () => {
+    getCurrentAddress().then(async (data) => {
+      const address = {
+        province: data?.address?.features[0]?.properties?.city,
+        district: data?.address?.features[0]?.properties?.suburb,
+        ward: data?.address?.features[0]?.properties?.road,
+      };
+
+      const confirmed = window.confirm("Bạn có muốn cập nhật địa chỉ mới?");
+
+      if (confirmed) {
+        try {
+          await toast.promise(userApi.updateAddress(address), {
+            loading: "Đang cập nhật",
+            success: "Cập nhật thành công",
+            error: "Cập nhật thất bại",
+          });
+          window.location.reload();
+        } catch (error) {
+          console.log(error);
+          toast.error("Cập nhật thất bại");
+        }
+      }
+    });
+  };
 
   return (
     <Box
@@ -74,7 +102,7 @@ const Filter = ({
         sx={{
           background: "white",
           p: 1,
-          gap: 3,
+          gap: 1,
           width: 200,
           height: "max-content",
           borderRadius: 5,
@@ -82,10 +110,11 @@ const Filter = ({
             background: "white",
           },
         }}
+        onClick={handleGetCurrentAddress}
       >
         <LocationOnIcon sx={{ color: "black", fontSize: "16" }} />
-        <Typography color={"black"} fontWeight={600} fontSize={25}>
-          {companyAuthor?.name ?? "ABC"}
+        <Typography color={"black"} fontWeight={600} fontSize={16}>
+          {user?.address?.province ?? "ABC"}
         </Typography>
       </Button>
       <Box

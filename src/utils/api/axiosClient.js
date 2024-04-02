@@ -1,7 +1,7 @@
 import axios from "axios";
 import queryString from "query-string";
-export const hostServer = "https://internship-gpdp.onrender.com";
-// export const hostServer = "http://localhost:5000";
+// export const hostServer = "https://internship-gpdp.onrender.com";
+export const hostServer = "http://localhost:5000";
 
 const axiosClient = axios.create({
   baseURL: `${hostServer}/api/v1/`,

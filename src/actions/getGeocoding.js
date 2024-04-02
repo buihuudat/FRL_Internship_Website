@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const key = "7fb1986b8db3439c914fde1c905986bc";
+export const key = "7fb1986b8db3439c914fde1c905986bc";
 
 export const getGeocoding = async (address) => {
   const url = `https://api.geoapify.com/v1/geocode/search?text=${encodeURIComponent(
