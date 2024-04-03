@@ -82,280 +82,290 @@ const Company = () => {
     return getDistance(geo1, geo2);
   }, [geo1, geo2]);
 
-  return isLoading ? (
-    <LinearProgress />
-  ) : (
-    <Box>
-      <Divider sx={{ color: "white" }} />
-      <Box sx={{ display: "flex", gap: 3, px: 10 }}>
-        <img
-          src={company?.image}
-          style={{
-            borderRadius: 5,
-            width: 200,
-            height: 200,
-            objectFit: "cover",
-          }}
-          alt="logo-company"
-        />
+  return (
+    <Box minHeight={"80vh"}>
+      {isLoading ? (
+        <LinearProgress />
+      ) : (
         <Box>
-          <Typography fontWeight={600} color={"white"} fontSize={30}>
-            {company?.name}
-          </Typography>
-          <Box sx={{ display: "flex", gap: 3 }}>
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "row",
-                gap: 1,
-                alignItems: "center",
+          <Divider sx={{ color: "white" }} />
+          <Box sx={{ display: "flex", gap: 3, px: 10 }}>
+            <img
+              src={company?.image}
+              style={{
+                borderRadius: 5,
+                width: 200,
+                height: 200,
+                objectFit: "cover",
               }}
-            >
-              <LocationOnIcon sx={{ color: "white" }} />
-              <Typography fontWeight={600} color={"white"} fontSize={20}>
-                {address(company?.address)}
+              alt="logo-company"
+            />
+            <Box>
+              <Typography fontWeight={600} color={"white"} fontSize={30}>
+                {company?.name}
               </Typography>
-            </Box>
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "row",
-                gap: 1,
-                alignItems: "center",
-              }}
-            >
-              <BookmarksIcon sx={{ color: "white" }} />
-              <Typography fontWeight={600} color={"white"} fontSize={20}>
-                {jobsOfCompany?.length} việc làm đang tuyển dụng
-              </Typography>
+              <Box sx={{ display: "flex", gap: 3 }}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "row",
+                    gap: 1,
+                    alignItems: "center",
+                  }}
+                >
+                  <LocationOnIcon sx={{ color: "white" }} />
+                  <Typography fontWeight={600} color={"white"} fontSize={20}>
+                    {address(company?.address)}
+                  </Typography>
+                </Box>
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "row",
+                    gap: 1,
+                    alignItems: "center",
+                  }}
+                >
+                  <BookmarksIcon sx={{ color: "white" }} />
+                  <Typography fontWeight={600} color={"white"} fontSize={20}>
+                    {jobsOfCompany?.length} việc làm đang tuyển dụng
+                  </Typography>
+                </Box>
+              </Box>
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "row",
+                  gap: 1,
+                  alignItems: "center",
+                }}
+              >
+                <SocialDistanceIcon sx={{ color: "white" }} />
+                <Typography fontWeight={600} color={"white"} fontSize={20}>
+                  Khoảng cách đến công ty:{" "}
+                  {distance ? distance : <CircularProgress size={20} />}
+                </Typography>
+              </Box>
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "row",
+                  gap: 1,
+                  alignItems: "center",
+                }}
+              >
+                <EmailIcon sx={{ color: "white" }} />
+                <Typography fontWeight={600} color={"white"} fontSize={20}>
+                  Gửi email
+                </Typography>
+                <IconButton
+                  sx={{
+                    width: 100,
+                    height: 100,
+                    p: 5,
+                    background: "rgba(165,219,146,.1)",
+                    ml: 2,
+                  }}
+                  color="success"
+                  onClick={() => navigate(`/company/${company._id}/send-email`)}
+                >
+                  <AttachEmailIcon color="success" />
+                </IconButton>
+              </Box>
             </Box>
           </Box>
           <Box
             sx={{
+              mt: 5,
+              background: "#ddd",
               display: "flex",
-              flexDirection: "row",
-              gap: 1,
-              alignItems: "center",
+              width: "100%",
+              justifyContent: "center",
+              px: 10,
             }}
           >
-            <SocialDistanceIcon sx={{ color: "white" }} />
-            <Typography fontWeight={600} color={"white"} fontSize={20}>
-              Khoảng cách đến công ty:{" "}
-              {distance ? distance : <CircularProgress size={20} />}
-            </Typography>
-          </Box>
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "row",
-              gap: 1,
-              alignItems: "center",
-            }}
-          >
-            <EmailIcon sx={{ color: "white" }} />
-            <Typography fontWeight={600} color={"white"} fontSize={20}>
-              Gửi email
-            </Typography>
-            <IconButton
+            <Box
               sx={{
-                width: 100,
-                height: 100,
-                p: 5,
-                background: "rgba(165,219,146,.1)",
-                ml: 2,
+                py: 3,
+                width: "70%",
+                display: "flex",
+                flexDirection: "column",
+                gap: 3,
               }}
-              color="success"
-              onClick={() => navigate(`/company/${company._id}/send-email`)}
             >
-              <AttachEmailIcon color="success" />
-            </IconButton>
-          </Box>
-        </Box>
-      </Box>
-      <Box
-        sx={{
-          mt: 5,
-          background: "#ddd",
-          display: "flex",
-          width: "100%",
-          justifyContent: "center",
-          px: 10,
-        }}
-      >
-        <Box
-          sx={{
-            py: 3,
-            width: "70%",
-            display: "flex",
-            flexDirection: "column",
-            gap: 3,
-          }}
-        >
-          <Paper>
-            <Typography
-              fontSize={23}
-              fontWeight={600}
-              color={"red"}
-              pl={5}
-              py={3}
-            >
-              Giới thiệu
-            </Typography>
-          </Paper>
+              <Paper>
+                <Typography
+                  fontSize={23}
+                  fontWeight={600}
+                  color={"red"}
+                  pl={5}
+                  py={3}
+                >
+                  Giới thiệu
+                </Typography>
+              </Paper>
 
-          <Paper>
-            <Typography fontSize={23} fontWeight={600} pl={5} py={3}>
-              Thông tin công ty
-            </Typography>
-            <Divider />
+              <Paper>
+                <Typography fontSize={23} fontWeight={600} pl={5} py={3}>
+                  Thông tin công ty
+                </Typography>
+                <Divider />
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "row",
+                    flexWrap: "wrap",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <Box
+                    sx={{
+                      width: "30%",
+                      display: "flex",
+                      textAlign: "start",
+                      flexDirection: "column",
+                      px: 5,
+                      py: 1,
+                    }}
+                  >
+                    <Typography>Mô hình công ty</Typography>
+                    <Typography fontWeight={600} fontSize={18}>
+                      Sản phẩm
+                    </Typography>
+                  </Box>
+                  <Box
+                    sx={{
+                      width: "30%",
+                      display: "flex",
+                      textAlign: "start",
+                      flexDirection: "column",
+                      px: 5,
+                      py: 1,
+                    }}
+                  >
+                    <Typography>Quy mô công ty</Typography>
+                    <Typography fontWeight={600} fontSize={18}>
+                      {company?.scale}
+                    </Typography>
+                  </Box>
+                  <Box
+                    sx={{
+                      width: "30%",
+                      display: "flex",
+                      textAlign: "start",
+                      flexDirection: "column",
+                      px: 5,
+                      py: 1,
+                    }}
+                  >
+                    <Typography>Quốc gia</Typography>
+                    <Typography fontWeight={600} fontSize={18}>
+                      {company?.country}
+                    </Typography>
+                  </Box>
+                  <Box
+                    sx={{
+                      width: "30%",
+                      display: "flex",
+                      textAlign: "start",
+                      flexDirection: "column",
+                      px: 5,
+                      py: 1,
+                    }}
+                  >
+                    <Typography>Thời gian làm việc</Typography>
+                    <Typography fontWeight={600} fontSize={18}>
+                      Thứ 2 - thứ 6
+                    </Typography>
+                  </Box>
+                  <Box
+                    sx={{
+                      width: "30%",
+                      display: "flex",
+                      textAlign: "start",
+                      flexDirection: "column",
+                      px: 5,
+                      py: 1,
+                    }}
+                  >
+                    <Typography>Giờ làm việc</Typography>
+                    <Typography fontWeight={600} fontSize={18}>
+                      {company?.ot}
+                    </Typography>
+                  </Box>
+                </Box>
+              </Paper>
+
+              <Paper>
+                <Typography
+                  fontSize={23}
+                  fontWeight={600}
+                  color={"red"}
+                  pl={5}
+                  py={3}
+                >
+                  Giới thiệu công ty
+                </Typography>
+                <Divider />
+                <Typography p={5} py={2} fontWeight={600}>
+                  {company?.description}
+                </Typography>
+                <Divider />
+                <Box
+                  p={5}
+                  pt={2}
+                  display={"flex"}
+                  alignItems={"center"}
+                  gap={3}
+                >
+                  <Box sx={{ display: "flex", alignItems: "center" }}>
+                    <LanguageIcon color="primary" />
+                    <Typography color={"primary"} fontWeight={600}>
+                      <a
+                        rel="noopener noreferrer"
+                        target="_blank"
+                        href="/"
+                        style={{ textDecoration: "none" }}
+                      >
+                        Website công ty
+                      </a>
+                    </Typography>
+                  </Box>
+                  <Box sx={{ display: "flex", alignItems: "center" }}>
+                    <FacebookIcon color="primary" />
+                    <Typography color="primary" fontWeight={600}>
+                      <a
+                        rel="noopener noreferrer"
+                        target="_blank"
+                        href="/"
+                        style={{ textDecoration: "none" }}
+                      >
+                        Fanpage Facebook
+                      </a>
+                    </Typography>
+                  </Box>
+                </Box>
+              </Paper>
+
+              <Comment comments={comments} company={company} />
+            </Box>
             <Box
               sx={{
                 display: "flex",
-                flexDirection: "row",
-                flexWrap: "wrap",
-                justifyContent: "space-between",
+                flexDirection: "column",
+                gap: 2,
+                p: 2,
+                maxHeight: 600,
+                overflow: "auto",
               }}
             >
-              <Box
-                sx={{
-                  width: "30%",
-                  display: "flex",
-                  textAlign: "start",
-                  flexDirection: "column",
-                  px: 5,
-                  py: 1,
-                }}
-              >
-                <Typography>Mô hình công ty</Typography>
-                <Typography fontWeight={600} fontSize={18}>
-                  Sản phẩm
-                </Typography>
-              </Box>
-              <Box
-                sx={{
-                  width: "30%",
-                  display: "flex",
-                  textAlign: "start",
-                  flexDirection: "column",
-                  px: 5,
-                  py: 1,
-                }}
-              >
-                <Typography>Quy mô công ty</Typography>
-                <Typography fontWeight={600} fontSize={18}>
-                  {company?.scale}
-                </Typography>
-              </Box>
-              <Box
-                sx={{
-                  width: "30%",
-                  display: "flex",
-                  textAlign: "start",
-                  flexDirection: "column",
-                  px: 5,
-                  py: 1,
-                }}
-              >
-                <Typography>Quốc gia</Typography>
-                <Typography fontWeight={600} fontSize={18}>
-                  {company?.country}
-                </Typography>
-              </Box>
-              <Box
-                sx={{
-                  width: "30%",
-                  display: "flex",
-                  textAlign: "start",
-                  flexDirection: "column",
-                  px: 5,
-                  py: 1,
-                }}
-              >
-                <Typography>Thời gian làm việc</Typography>
-                <Typography fontWeight={600} fontSize={18}>
-                  Thứ 2 - thứ 6
-                </Typography>
-              </Box>
-              <Box
-                sx={{
-                  width: "30%",
-                  display: "flex",
-                  textAlign: "start",
-                  flexDirection: "column",
-                  px: 5,
-                  py: 1,
-                }}
-              >
-                <Typography>Giờ làm việc</Typography>
-                <Typography fontWeight={600} fontSize={18}>
-                  {company?.ot}
-                </Typography>
-              </Box>
+              {jobsOfCompany?.map((job) => (
+                <JobItem key={job._id} {...job} company={company} />
+              ))}
             </Box>
-          </Paper>
-
-          <Paper>
-            <Typography
-              fontSize={23}
-              fontWeight={600}
-              color={"red"}
-              pl={5}
-              py={3}
-            >
-              Giới thiệu công ty
-            </Typography>
-            <Divider />
-            <Typography p={5} py={2} fontWeight={600}>
-              {company?.description}
-            </Typography>
-            <Divider />
-            <Box p={5} pt={2} display={"flex"} alignItems={"center"} gap={3}>
-              <Box sx={{ display: "flex", alignItems: "center" }}>
-                <LanguageIcon color="primary" />
-                <Typography color={"primary"} fontWeight={600}>
-                  <a
-                    rel="noopener noreferrer"
-                    target="_blank"
-                    href="/"
-                    style={{ textDecoration: "none" }}
-                  >
-                    Website công ty
-                  </a>
-                </Typography>
-              </Box>
-              <Box sx={{ display: "flex", alignItems: "center" }}>
-                <FacebookIcon color="primary" />
-                <Typography color="primary" fontWeight={600}>
-                  <a
-                    rel="noopener noreferrer"
-                    target="_blank"
-                    href="/"
-                    style={{ textDecoration: "none" }}
-                  >
-                    Fanpage Facebook
-                  </a>
-                </Typography>
-              </Box>
-            </Box>
-          </Paper>
-
-          <Comment comments={comments} company={company} />
+          </Box>
         </Box>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            gap: 2,
-            p: 2,
-            maxHeight: 600,
-            overflow: "auto",
-          }}
-        >
-          {jobsOfCompany?.map((job) => (
-            <JobItem key={job._id} {...job} company={company} />
-          ))}
-        </Box>
-      </Box>
+      )}
     </Box>
   );
 };

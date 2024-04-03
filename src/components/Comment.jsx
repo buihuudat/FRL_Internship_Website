@@ -3,7 +3,6 @@ import {
   Box,
   Button,
   Divider,
-  IconButton,
   Paper,
   TextField,
   Typography,
@@ -42,7 +41,7 @@ const Comment = ({ comments = [], company }) => {
   const rateAverage =
     comments.reduce((acc, comment) => acc + comment.rate, 0) / comments.length;
 
-  const handleLike = (id, action) => {};
+  // const handleLike = (id, action) => {};
   const handleDeleteComment = async (id) => {
     try {
       await toast.promise(commentApi.deleteComment(id), {
@@ -88,7 +87,7 @@ const Comment = ({ comments = [], company }) => {
         </Box>
       )}
 
-      <Box>
+      <Box px={2}>
         {comments.map((comment) => (
           <Box key={comment._id}>
             <Box

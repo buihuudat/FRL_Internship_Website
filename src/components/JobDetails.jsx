@@ -162,7 +162,11 @@ const JobDetails = () => {
         >
           <SocialDistanceIcon color="error" sx={{ fontSize: 30 }} />
           <Typography color={"red"} fontWeight={600}>
-            {distance ? distance : <CircularProgress color="error" size={20} />}
+            {distance ? (
+              `Khoảng cách của bạn: ${distance}`
+            ) : (
+              <CircularProgress color="error" size={20} />
+            )}
           </Typography>
         </Box>
         <Box
