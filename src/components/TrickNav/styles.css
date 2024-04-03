@@ -1,0 +1,15 @@
+@keyframes running-text {
+  0% {
+    transform: translateX(0%);
+  }
+
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+.running-text {
+  white-space: nowrap;
+  overflow: hidden;
+  animation: running-text 10s linear infinite;
+}

@@ -7,6 +7,10 @@ const initialState = {
     show: false,
     data: null,
   },
+  skillModal: {
+    show: false,
+    data: null,
+  },
 };
 
 const userSlice = createSlice({
@@ -22,9 +26,12 @@ const userSlice = createSlice({
     setUsers: (state, action) => {
       state.users = action.payload;
     },
+    setSkillModal: (state, action) => {
+      state.skillModal = action.payload;
+    },
   },
 });
 
-export const { setUser, setModal, setUsers } = userSlice.actions;
+export const { setUser, setModal, setUsers, setSkillModal } = userSlice.actions;
 
 export default userSlice.reducer;

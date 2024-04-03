@@ -5,6 +5,7 @@ import { Provider } from "react-redux";
 import { store } from "./store";
 import { Toaster } from "react-hot-toast";
 import "rsuite/Rate/styles/index.css";
+import "moment/locale/vi";
 
 const App = () => {
   const theme = createTheme({

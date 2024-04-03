@@ -67,9 +67,13 @@ const JobDetails = () => {
       ).then((data) => setGeo1([data.lat, data.lon]));
     }
     if (user && user.address) {
-      getGeocoding(address({ ...user.address, street: null })).then((data) =>
-        setGeo2([data.lat, data.lon])
-      );
+      if (user.address.lat && user.address.lng) {
+        setGeo2([user.address.lat, user.address.lng]);
+      } else {
+        getGeocoding(address({ ...user.address, street: null })).then((data) =>
+          setGeo2([data.lat, data.lon])
+        );
+      }
     }
   }, [jobSelected, user, modal]);
 
@@ -169,7 +173,7 @@ const JobDetails = () => {
             gap: 1,
           }}
         >
-          <ApartmentIcon sx={{ fontSize: 30 }} />
+          <ApartmentIcon color="info" sx={{ fontSize: 30 }} />
           <Typography fontWeight={600}>
             {address(jobSelected.jobLocation)}
           </Typography>
@@ -182,7 +186,7 @@ const JobDetails = () => {
             gap: 1,
           }}
         >
-          <AccessAlarmIcon sx={{ fontSize: 30 }} />
+          <AccessAlarmIcon color="warning" sx={{ fontSize: 30 }} />
           <Typography fontWeight={600}>{jobSelected.wotkingForm}</Typography>
         </Box>
         <Box sx={{ display: "flex", flexDirection: "row", gap: 1 }}>
@@ -206,7 +210,7 @@ const JobDetails = () => {
         <Divider sx={{ pt: 2 }} />
 
         <Box>
-          <Typography fontSize={25} fontWeight={600}>
+          <Typography fontSize={25} fontWeight={600} color={"orange"}>
             {jobSelected.company?.name}
           </Typography>
           <Box
@@ -219,25 +223,25 @@ const JobDetails = () => {
             }}
           >
             <Box sx={{ width: "30%" }}>
-              <Typography color={"#333"}>Mô hình công ty</Typography>
+              <Typography color={"gray"}>Mô hình công ty</Typography>
               <Typography fontWeight={600}>Doanh nghiệp</Typography>
             </Box>
             <Box sx={{ width: "30%" }}>
-              <Typography color={"#333"}>Quy mô công ty</Typography>
+              <Typography color={"gray"}>Quy mô công ty</Typography>
               <Typography fontWeight={600}>50-150 nhân viên</Typography>
             </Box>
             <Box sx={{ width: "30%" }}>
-              <Typography color={"#333"}>Quốc gia</Typography>
+              <Typography color={"gray"}>Quốc gia</Typography>
               <Typography fontWeight={600}>
                 {jobSelected.company?.country}
               </Typography>
             </Box>
             <Box sx={{ width: "30%" }}>
-              <Typography color={"#333"}>Thời gian làm việc</Typography>
+              <Typography color={"gray"}>Thời gian làm việc</Typography>
               <Typography fontWeight={600}>Thứ 2 - Thứ 6</Typography>
             </Box>
             <Box sx={{ width: "30%" }}>
-              <Typography color={"#333"}>Làm việc ngoài giờ</Typography>
+              <Typography color={"gray"}>Làm việc ngoài giờ</Typography>
               <Typography fontWeight={600}>
                 {jobSelected.company?.ot}
               </Typography>

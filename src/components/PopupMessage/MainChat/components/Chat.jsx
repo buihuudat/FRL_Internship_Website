@@ -126,6 +126,9 @@ const Chat = () => {
           value={message}
           label="Đặt câu hỏi..."
           variant="filled"
+          onKeyDown={(e) => {
+            if (e.key === "Enter") handleSend();
+          }}
         />
         <LoadingButton
           onClick={handleSend}

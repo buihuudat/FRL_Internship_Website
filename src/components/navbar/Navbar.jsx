@@ -21,6 +21,7 @@ import { permissionAccess } from "../../resources/data";
 import { setNotifications } from "../../slice/notification";
 import toast from "react-hot-toast";
 import { notificationApi } from "../../utils/api/notificationApi";
+import TrickNav from "../TrickNav";
 
 const Navbar = () => {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -82,6 +83,7 @@ const Navbar = () => {
         background: `linear-gradient(to right, black, #540509)`,
         width: "100%",
         zIndex: 1000,
+        alignItems: "center",
       }}
     >
       <Link
@@ -96,6 +98,7 @@ const Navbar = () => {
       >
         Internship
       </Link>
+      <TrickNav />
       {user ? (
         <Box
           sx={{
@@ -106,7 +109,7 @@ const Navbar = () => {
           }}
         >
           <Avatar src={user?.avatar} alt="avt-user" />
-          <Box sx={{ mr: 10 }}>
+          <Box sx={{ mr: 1 }}>
             <Button
               aria-controls={open ? "basic-menu" : undefined}
               aria-haspopup="true"
@@ -114,7 +117,9 @@ const Navbar = () => {
               onClick={handleClick}
               sx={{ color: "white" }}
             >
-              {user?.username}
+              {user?.username?.length > 20
+                ? user?.username.slice(0, 20) + "..."
+                : user.username}
             </Button>
             <Menu
               id="basic-menu"

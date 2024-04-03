@@ -21,6 +21,8 @@ import { jobApi } from "../utils/api/jobApi";
 import { useEffect, useState } from "react";
 import { permissionAccess } from "../resources/data";
 import { address } from "../actions/userAddress";
+import moment from "moment";
+import AccessTimeIcon from "@mui/icons-material/AccessTime";
 
 const JobItem = (job) => {
   const { pathname } = useLocation();
@@ -163,7 +165,7 @@ const JobItem = (job) => {
               gap: 1,
             }}
           >
-            <ApartmentIcon />
+            <ApartmentIcon color="primary" />
             <Typography fontWeight={600}>{address(job.jobLocation)}</Typography>
           </Box>
           <Box
@@ -174,8 +176,21 @@ const JobItem = (job) => {
               gap: 1,
             }}
           >
-            <CurrencyExchangeIcon />
+            <CurrencyExchangeIcon color="warning" />
             <Typography fontWeight={600}>{job.salary}</Typography>
+          </Box>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+              gap: 1,
+            }}
+          >
+            <AccessTimeIcon color="success" />
+            <Typography fontWeight={600} color={"gray"}>
+              {moment(job.createdAt).fromNow()}
+            </Typography>
           </Box>
         </Box>
         <Divider />

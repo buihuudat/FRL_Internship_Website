@@ -67,9 +67,13 @@ const Company = () => {
     }
 
     if (user && user.address) {
-      getGeocoding(address({ ...user.address, street: null })).then((data) => {
-        setGeo2([data.lat, data.lon]);
-      });
+      if (user.address.lat && user.address.lng) {
+        setGeo2([user.address.lat, user.address.lng]);
+      } else {
+        getGeocoding(address({ ...user.address, street: null })).then((data) =>
+          setGeo2([data.lat, data.lon])
+        );
+      }
     }
   }, [company, user]);
 

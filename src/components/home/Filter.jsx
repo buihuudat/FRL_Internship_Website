@@ -62,11 +62,14 @@ const Filter = ({
   const user = useSelector((state) => state.user.user);
 
   const handleGetCurrentAddress = () => {
+    if (!user) return;
     getCurrentAddress().then(async (data) => {
       const address = {
         province: data?.address?.features[0]?.properties?.city,
         district: data?.address?.features[0]?.properties?.suburb,
         ward: data?.address?.features[0]?.properties?.road,
+        lat: data.lat,
+        lng: data.lng,
       };
 
       const confirmed = window.confirm("Bạn có muốn cập nhật địa chỉ mới?");
@@ -90,7 +93,8 @@ const Filter = ({
   return (
     <Box
       sx={{
-        p: 3,
+        p: 1,
+        px: 10,
         display: "flex",
         flexDirection: "row",
         width: "100%",

@@ -7,15 +7,17 @@ import PersonIcon from "@mui/icons-material/Person";
 import CardGiftcardIcon from "@mui/icons-material/CardGiftcard";
 import SocialDistanceIcon from "@mui/icons-material/SocialDistance";
 import BorderColorIcon from "@mui/icons-material/BorderColor";
-import { setModal } from "../../slice/userSlice";
+import { setModal, setSkillModal } from "../../slice/userSlice";
 import ProfileModal from "../../components/ProfileModal";
 import moment from "moment";
 import { useState } from "react";
 import { address } from "../../actions/userAddress";
+import SkillModal from "../../components/SkillModal";
 
 const Profile = () => {
   const { user } = useSelector((state) => state.user);
   const [showFull, setShowFull] = useState(false);
+  const [skills, setSkills] = useState(user?.skills || []);
 
   const dispatch = useDispatch();
 
@@ -23,11 +25,28 @@ const Profile = () => {
     dispatch(setModal({ show: true }));
   };
 
+  const handleEditSkills = () => {
+    dispatch(setSkillModal({ show: true, data: user?.skills }));
+  };
+
   return (
     <Box>
-      <Box sx={{ width: "100%", background: "white", padding: 3 }}>
+      <Box
+        sx={{ width: "100%", background: "white", padding: 2, display: "flex" }}
+      >
         <Typography fontWeight={600} color={"red"} fontSize={25}>
           Hồ Sơ
+        </Typography>
+        <Typography
+          align="center"
+          sx={{ margin: "auto" }}
+          fontWeight={600}
+          color={"gray"}
+          fontSize={20}
+          fontFamily={"monospace"}
+          fontStyle={"italic"}
+        >
+          Thêm kỹ năng của bạn để dễ dàng tìm được công việc thích hợp!
         </Typography>
       </Box>
 
@@ -39,8 +58,9 @@ const Profile = () => {
           alignItems: "center",
           justifyContent: "center",
           flexDirection: "column",
-          gap: 5,
-          padding: 10,
+          gap: 3,
+          paddingX: 10,
+          py: 5,
         }}
       >
         <Box
@@ -149,8 +169,52 @@ const Profile = () => {
             </Typography>
           )}
         </Box>
+
+        {/* skills */}
+        <Box
+          sx={{ background: "#fff", padding: 5, width: 700, borderRadius: 5 }}
+        >
+          <Box
+            sx={{ display: "flex", flexDirection: "row", alignItems: "center" }}
+          >
+            <Typography fontWeight={600}>Kỹ năng</Typography>
+            <IconButton onClick={handleEditSkills}>
+              <BorderColorIcon color="error" />
+            </IconButton>
+          </Box>
+          <Divider />
+
+          <Box
+            sx={{
+              m: 1,
+              display: "flex",
+              gap: 1,
+              flexDirection: "row",
+              flexWrap: "wrap",
+            }}
+          >
+            {skills &&
+              skills?.map((skill, index) => (
+                <Typography
+                  key={index}
+                  sx={{
+                    px: 1,
+                    pt: 0.3,
+                    borderRadius: 20,
+                    width: "max-content",
+                    border: "1px solid gray",
+                    fontWeight: 600,
+                    color: "gray",
+                  }}
+                >
+                  {skill}
+                </Typography>
+              ))}
+          </Box>
+        </Box>
       </Box>
       <ProfileModal />
+      <SkillModal skills={skills} setSkills={setSkills} />
     </Box>
   );
 };

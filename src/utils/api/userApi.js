@@ -9,4 +9,5 @@ export const userApi = {
   jobApply: (data) => axiosClient.post("user/apply", data),
   getCVapplied: (userId) => axiosClient.get(`user/${userId}/cv-applied`),
   getJobsApplied: () => axiosClient.get(`user/jobs-applied`),
+  updateSkills: (skills) => axiosClient.put("user/update-skills", { skills }),
 };

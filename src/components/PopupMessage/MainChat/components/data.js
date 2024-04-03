@@ -2,6 +2,7 @@ export const dataMessage = [
   "Kỹ năng cần thiết cho sự nghiệp IT.",
   "Lộ trình học lập trình hiệu quả.",
   "Xu hướng công nghệ mới nhất.",
+  "Gợi ý công việc phù hợp.",
   "Chuẩn bị cho cuộc phỏng vấn và tìm kiếm thực tập.",
 ];
 
