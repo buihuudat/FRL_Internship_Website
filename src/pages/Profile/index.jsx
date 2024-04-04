@@ -1,4 +1,11 @@
-import { Avatar, Box, Divider, IconButton, Typography } from "@mui/material";
+import {
+  Avatar,
+  Box,
+  Divider,
+  IconButton,
+  Link,
+  Typography,
+} from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import MailOutlineIcon from "@mui/icons-material/MailOutline";
 import PhoneIcon from "@mui/icons-material/Phone";
@@ -13,6 +20,7 @@ import moment from "moment";
 import { useState } from "react";
 import { address } from "../../actions/userAddress";
 import SkillModal from "../../components/SkillModal";
+import LinkIcon from "@mui/icons-material/Link";
 
 const Profile = () => {
   const { user } = useSelector((state) => state.user);
@@ -34,7 +42,7 @@ const Profile = () => {
       <Box
         sx={{ width: "100%", background: "white", padding: 2, display: "flex" }}
       >
-        <Typography fontWeight={600} color={"red"} fontSize={25}>
+        <Typography fontWeight={600} color={"#AA113F"} fontSize={25}>
           Hồ Sơ
         </Typography>
         <Typography
@@ -95,9 +103,9 @@ const Profile = () => {
               <Avatar
                 src={user?.avatar}
                 alt="avt-user"
-                sx={{ width: 80, height: 80 }}
+                sx={{ width: 70, height: 70 }}
               />
-              <Typography fontWeight={600} fontSize={23}>
+              <Typography fontWeight={600} fontSize={25}>
                 {user?.name || user?.username}
               </Typography>
             </Box>
@@ -114,31 +122,44 @@ const Profile = () => {
           >
             <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
               <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                <MailOutlineIcon color="error" />
+                <MailOutlineIcon color="error" sx={{ width: 30, height: 30 }} />
                 <Typography>{user?.email}</Typography>
               </Box>
 
               <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                <PhoneIcon color="error" />
+                <PhoneIcon color="error" sx={{ width: 30, height: 30 }} />
                 <Typography>{user?.phone}</Typography>
               </Box>
               <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                <LocationOnIcon color="error" />
-                <Typography>{address(user?.address)}</Typography>
+                <LocationOnIcon color="error" sx={{ width: 30, height: 30 }} />
+                <Typography>
+                  {address(user?.address)?.length > 50
+                    ? address(user?.address).slice(0, 50) + "..."
+                    : address(user?.address)}
+                </Typography>
               </Box>
             </Box>
             <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
               <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                <PersonIcon color="error" />
+                <PersonIcon color="error" sx={{ width: 30, height: 30 }} />
                 <Typography>{user?.gender}</Typography>
               </Box>
               <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                <CardGiftcardIcon color="error" />
-                <Typography>{moment(user?.birthday).format("l")}</Typography>
+                <CardGiftcardIcon
+                  color="error"
+                  sx={{ width: 30, height: 30 }}
+                />
+                <Typography>
+                  {moment(user?.birthday).format("DD/MM/yyyy")}
+                </Typography>
               </Box>
               <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                <SocialDistanceIcon color="error" />
-                <Typography>{user?.social}</Typography>
+                <LinkIcon color="error" sx={{ width: 30, height: 30 }} />
+                <Typography component={Link} href={user?.social}>
+                  {user?.social?.length > 20
+                    ? user.social.slice(0, 20) + "..."
+                    : user.social}
+                </Typography>
               </Box>
             </Box>
           </Box>

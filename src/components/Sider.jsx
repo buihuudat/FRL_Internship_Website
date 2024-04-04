@@ -70,10 +70,21 @@ const Sider = () => {
               <ListItemButton
                 key={i}
                 onClick={() => navigate(data.href)}
-                sx={pathname === data.href && { background: "#999" }}
+                sx={
+                  pathname === data.href && {
+                    background: `linear-gradient(to right,  #540509, white)`,
+                  }
+                }
               >
-                <ListItemIcon>{data.icon}</ListItemIcon>
-                <ListItemText primary={data.title} />
+                <ListItemIcon
+                  sx={{ color: pathname === data.href ? "white" : "black" }}
+                >
+                  {data.icon}
+                </ListItemIcon>
+                <ListItemText
+                  primary={data.title}
+                  sx={{ color: pathname === data.href ? "white" : "black" }}
+                />
               </ListItemButton>
             )
         )}

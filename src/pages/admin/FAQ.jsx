@@ -62,7 +62,7 @@ const AdminFAQ = () => {
             key={faq._id}
             onClick={() => handleUpdate(faq)}
           >
-            <Typography fontWeight={600}>
+            <Typography fontWeight={600} color={"#93173B"}>
               {faq.question.length > 70
                 ? faq.question.slice(0, 70) + "..."
                 : faq.question}
