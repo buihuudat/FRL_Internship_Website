@@ -7,6 +7,7 @@ import {
   InputLabel,
   Select,
   MenuItem,
+  Skeleton,
 } from "@mui/material";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import { data } from "../../sources/data";
@@ -14,6 +15,7 @@ import { useSelector } from "react-redux";
 import { getCurrentAddress } from "../../actions/getCurrentAddress";
 import { userApi } from "../../utils/api/userApi";
 import toast from "react-hot-toast";
+import { address } from "../../actions/userAddress";
 
 const SelectActions = ({
   name,
@@ -102,35 +104,43 @@ const Filter = ({
         gap: 5,
       }}
     >
-      <Button
-        sx={{
-          background: "white",
-          p: 1,
-          gap: 1,
-          width: 200,
-          height: "max-content",
-          borderRadius: 5,
-          ":hover": {
-            background: "white",
-          },
-        }}
-        onClick={handleGetCurrentAddress}
-      >
-        <LocationOnIcon sx={{ color: "black", fontSize: "16" }} />
-        <Typography color={"black"} fontWeight={600} fontSize={16}>
-          {user?.address?.province ?? "ABC"}
-        </Typography>
-      </Button>
+      <Box sx={{ width: 120 }}></Box>
       <Box
         sx={{
           display: "flex",
           flexDirection: "row",
           flexWrap: "wrap",
-          gap: 5,
+          gap: 1,
           flex: 1,
           justifyContent: "space-between",
         }}
       >
+        <Button
+          fullWidth
+          sx={{
+            p: 1,
+            gap: 1,
+            height: "max-content",
+            ":hover": {
+              background: "#555",
+            },
+          }}
+          variant="text"
+          onClick={handleGetCurrentAddress}
+        >
+          <LocationOnIcon sx={{ color: "white", fontSize: "16" }} />
+          {user?.address ? (
+            <Typography color={"white"} fontWeight={600} fontSize={16}>
+              {address(user.address)}
+            </Typography>
+          ) : (
+            <Skeleton
+              variant="text"
+              animation="wave"
+              sx={{ fontSize: "1rem", width: 400, backgroundColor: "gray" }}
+            />
+          )}
+        </Button>
         <Box
           sx={{
             width: "100%",

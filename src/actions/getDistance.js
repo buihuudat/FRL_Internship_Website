@@ -1,9 +1,16 @@
 import haversine from "haversine-distance";
 
-export const getDistance = ([a, b], [c, d]) => {
-  const rs = Math.round(haversine([a, b], [c, d]));
+export const getDistance = ([lat1, lon1], [lat2, lon2]) => {
+  const distanceInMeters = Math.round(
+    haversine({ lat: lat1, lon: lon1 }, { lat: lat2, lon: lon2 })
+  );
 
-  if (!rs) return null;
-  if (rs < 1000) return rs.toString().replace(".", ",") + " m";
-  return (rs / 1000).toString().replace(".", ",") + " km";
+  if (distanceInMeters < 1000) {
+    return distanceInMeters + " m";
+  } else {
+    const distanceInKilometers = (distanceInMeters / 1000)
+      .toFixed(2)
+      .replace(".", ",");
+    return distanceInKilometers + " km";
+  }
 };

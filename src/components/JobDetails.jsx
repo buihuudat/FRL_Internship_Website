@@ -43,6 +43,7 @@ const JobDetails = () => {
   const navigate = useNavigate();
   const user = useSelector((state) => state.user.user);
   const { jobSelected, modal } = useSelector((state) => state.job);
+  console.log(jobSelected);
 
   const [showFull, setShowFull] = useState(
     () => jobSelected.jobDescription > 200
@@ -91,6 +92,7 @@ const JobDetails = () => {
 
   const distance = useMemo(() => {
     if (!geo1 || !geo2) return null;
+    console.log(geo1, geo2);
     return getDistance(geo1, geo2);
   }, [geo1, geo2]);
 

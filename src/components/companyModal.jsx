@@ -9,6 +9,7 @@ import {
   FormControl,
   FormControlLabel,
   FormLabel,
+  Paper,
   Radio,
   RadioGroup,
   Typography,
@@ -18,6 +19,7 @@ import toast from "react-hot-toast";
 import JobItem from "./JobItem";
 import CompanyAddress from "./CompanyAddress";
 import { companyApi } from "../utils/api/companyApi";
+import { address as getAddress } from "../actions/userAddress";
 
 const style = {
   position: "absolute",
@@ -42,8 +44,6 @@ const CompanyModal = () => {
   const open = useSelector((state) => state.company.modal.show);
 
   const [jobsOfCompany, setJobsOfCompany] = useState(null);
-
-  console.log(dataUpdate);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -109,6 +109,8 @@ const CompanyModal = () => {
     if (!e.type.includes("image")) return toast.error("Ảnh không hợp lệ");
     setImage(e.base64);
   };
+
+  console.log(dataUpdate);
 
   return (
     <Modal
@@ -187,7 +189,16 @@ const CompanyModal = () => {
             />
           </Box>
 
-          <CompanyAddress setInitialAddress={setAddress} />
+          <Paper levation={3} sx={{ p: 3, m: 2 }}>
+            <Typography>
+              Địa chỉ hiện tại:{" "}
+              <b>
+                <i>{getAddress(dataUpdate?.address)}</i>
+              </b>
+            </Typography>
+
+            <CompanyAddress setInitialAddress={setAddress} />
+          </Paper>
 
           <FormControl>
             <FormLabel>Tăng ca</FormLabel>

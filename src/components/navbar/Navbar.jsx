@@ -77,7 +77,7 @@ const Navbar = () => {
         display: "flex",
         flexDirection: "row",
         justifyContent: "space-between",
-        p: 2,
+        pt: 1,
         px: 10,
         position: "fixed",
         background: `linear-gradient(to right, black, #540509)`,
