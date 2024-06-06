@@ -1,4 +1,4 @@
-import { Box, LinearProgress } from "@mui/material";
+import { Box, CircularProgress, LinearProgress, Skeleton } from "@mui/material";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import Navbar from "../navbar/Navbar";
 import Footer from "../footer/Footer";
@@ -69,9 +69,7 @@ const AdminLayout = () => {
     checkAdmin();
   }, [dispatch, navigate, pathname]);
 
-  return isLoading ? (
-    <LinearProgress />
-  ) : (
+  return (
     <Box
       sx={{
         background: `linear-gradient(to right, black, #540509)`,
@@ -91,7 +89,15 @@ const AdminLayout = () => {
         }}
       >
         <Box component="nav">
-          <Sider />
+          {isLoading ? (
+            <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+              {[...Array(4)].map((_, i) => (
+                <Skeleton key={i} variant="rounded" width={300} height={60} />
+              ))}
+            </Box>
+          ) : (
+            <Sider />
+          )}
         </Box>
 
         <Box
@@ -102,7 +108,23 @@ const AdminLayout = () => {
             overflow: "auto",
           }}
         >
-          <Outlet />
+          {isLoading ? (
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                flexWrap: "wrap",
+                gap: 1,
+                padding: 2,
+              }}
+            >
+              {[...Array(4)].map((_, i) => (
+                <Skeleton key={i} variant="rounded" width={500} height={300} />
+              ))}
+            </Box>
+          ) : (
+            <Outlet />
+          )}
         </Box>
       </Box>
       <Footer />

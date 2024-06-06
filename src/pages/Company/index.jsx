@@ -5,6 +5,7 @@ import {
   IconButton,
   LinearProgress,
   Paper,
+  Skeleton,
   Typography,
 } from "@mui/material";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
@@ -100,7 +101,7 @@ const Company = () => {
               }}
               alt="logo-company"
             />
-            <Box>
+            <Box display={"flex"} flexDirection={"column"} gap={1}>
               <Typography fontWeight={600} color={"white"} fontSize={30}>
                 {company?.name}
               </Typography>
@@ -141,9 +142,26 @@ const Company = () => {
                 }}
               >
                 <SocialDistanceIcon sx={{ color: "white" }} />
-                <Typography fontWeight={600} color={"white"} fontSize={20}>
+                <Typography
+                  fontWeight={600}
+                  color={"white"}
+                  fontSize={20}
+                  sx={{ display: "flex", flexDirection: "row", gap: 1 }}
+                >
                   Khoảng cách đến công ty:{" "}
-                  {distance ? distance : <CircularProgress size={20} />}
+                  {distance ? (
+                    distance
+                  ) : (
+                    <Skeleton
+                      variant="text"
+                      animation="pulse"
+                      sx={{
+                        fontSize: "1rem",
+                        width: 50,
+                        backgroundColor: "gray",
+                      }}
+                    />
+                  )}
                 </Typography>
               </Box>
               <Box
@@ -160,9 +178,9 @@ const Company = () => {
                 </Typography>
                 <IconButton
                   sx={{
-                    width: 100,
-                    height: 100,
-                    p: 5,
+                    width: 50,
+                    height: 50,
+                    p: 2,
                     background: "rgba(165,219,146,.1)",
                     ml: 2,
                   }}

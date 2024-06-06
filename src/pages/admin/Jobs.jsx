@@ -1,4 +1,10 @@
-import { Box, CircularProgress, SpeedDial, SpeedDialIcon } from "@mui/material";
+import {
+  Box,
+  CircularProgress,
+  SpeedDial,
+  SpeedDialIcon,
+  Typography,
+} from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { setCreateModal } from "../../slice/jobSlice";
 import JobModal from "../../components/JobModal";
@@ -37,7 +43,7 @@ const Jobs = () => {
 
   return isLoading ? (
     <Box display={"flex"} sx={{ m: "0 auto", justifyContent: "center" }}>
-      <CircularProgress />
+      <CircularProgress color="error" />
     </Box>
   ) : (
     <Box
@@ -50,7 +56,19 @@ const Jobs = () => {
         flexWrap: "wrap",
       }}
     >
-      {!isLoading && jobs?.map((job) => <JobItem key={job._id} {...job} />)}
+      {!isLoading &&
+        (jobs?.length ? (
+          jobs?.map((job) => <JobItem key={job._id} {...job} />)
+        ) : (
+          <Typography
+            textAlign={"center"}
+            sx={{ mx: "auto", fontStyle: "italic" }}
+            variant="caption"
+          >
+            Chưa có công việc
+          </Typography>
+        ))}
+
       <Popup />
       <JobAppliedModal />
       <DetailCVmodal />

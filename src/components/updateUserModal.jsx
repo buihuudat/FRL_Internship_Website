@@ -10,6 +10,7 @@ import {
   FormControl,
   InputLabel,
   MenuItem,
+  Paper,
   Select,
   TextField,
 } from "@mui/material";
@@ -20,6 +21,7 @@ import { LoadingButton } from "@mui/lab";
 import moment from "moment";
 import UserAddress from "./UserAddress";
 import { userApi } from "../utils/api/userApi";
+import { address } from "../actions/userAddress";
 const style = {
   position: "absolute",
   top: "50%",
@@ -205,7 +207,17 @@ const UpdateUserModal = () => {
             />
           </Box>
 
-          <UserAddress user={user} setUser={setUser} />
+          <Paper levation={3} sx={{ p: 3, m: 2 }}>
+            <Typography>
+              Địa chỉ hiện tại:{" "}
+              <b>
+                <i>{address(user?.address)}</i>
+              </b>
+            </Typography>
+
+            <UserAddress user={user} setUser={setUser} />
+          </Paper>
+
           <Box>
             <Typography fontWeight={600}>Giới thiệu</Typography>
             <Divider />

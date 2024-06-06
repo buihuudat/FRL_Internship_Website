@@ -4,6 +4,7 @@ import {
   Button,
   CircularProgress,
   Divider,
+  Skeleton,
   Typography,
 } from "@mui/material";
 
@@ -167,7 +168,11 @@ const JobDetails = () => {
             {distance ? (
               `Khoảng cách của bạn: ${distance}`
             ) : (
-              <CircularProgress color="error" size={20} />
+              <Skeleton
+                variant="text"
+                animation="pulse"
+                sx={{ fontSize: "1rem", width: 200, backgroundColor: "#ddd" }}
+              />
             )}
           </Typography>
         </Box>

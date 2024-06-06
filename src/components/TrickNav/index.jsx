@@ -23,7 +23,7 @@ const TrickNav = () => {
       setPosition((prevPosition) =>
         prevPosition <= -100 ? 0 : prevPosition - 1
       );
-    }, 150);
+    }, 200);
 
     return () => clearInterval(interval);
   }, []);

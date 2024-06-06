@@ -62,11 +62,13 @@ const JobItem = (job) => {
   };
 
   const handleDelete = async () => {
-    await toast.promise(jobApi.deleteJob(job._id), {
-      loading: "Đang xóa công việc",
-      success: "Xóa công việc thành công",
-      error: "Xóa công việc thất bại",
-    });
+    await toast
+      .promise(jobApi.deleteJob(job._id), {
+        loading: "Đang xóa công việc",
+        success: "Xóa công việc thành công",
+        error: "Xóa công việc thất bại",
+      })
+      .then(() => window.location.reload());
   };
 
   const handleUpdate = () => {

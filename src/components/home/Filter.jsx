@@ -96,6 +96,7 @@ const Filter = ({
     <Box
       sx={{
         p: 1,
+        pt: 0,
         px: 10,
         display: "flex",
         flexDirection: "row",
@@ -136,7 +137,7 @@ const Filter = ({
           ) : (
             <Skeleton
               variant="text"
-              animation="wave"
+              animation="pulse"
               sx={{ fontSize: "1rem", width: 400, backgroundColor: "gray" }}
             />
           )}
