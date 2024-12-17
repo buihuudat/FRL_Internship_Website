@@ -19,7 +19,14 @@ const FilterData = ({ jobs }) => {
         <Typography fontSize={23} fontWeight={600}>
           {jobs?.length} công việc phù hợp
         </Typography>
-        <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            gap: 2,
+            overflow: "auto",
+          }}
+        >
           {isLoading ? (
             <LinearProgress />
           ) : (
@@ -27,7 +34,7 @@ const FilterData = ({ jobs }) => {
           )}
         </Box>
       </Box>
-      <Box sx={{ width: "40%", margin: 4 }}>
+      <Box sx={{ width: "40%", margin: 4, overflow: "auto" }}>
         <JobDetails />
       </Box>
     </Box>

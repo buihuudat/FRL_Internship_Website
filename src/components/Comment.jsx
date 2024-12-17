@@ -64,11 +64,10 @@ const Comment = ({ comments = [], company }) => {
           Có {comments.length} đánh giá
         </Typography>
       </Box>
-
       {!user ? null : comments.find((c) => c.user._id === user._id) ? null : (
         <Box>
           <Typography sx={{ fontWeight: 600 }}>Thêm đánh giá</Typography>
-          <Box sx={{ p: 2, display: "flex", flexDirection: "column" }}>
+          <Box sx={{ py: 2, display: "flex", flexDirection: "column" }}>
             <Rate defaultValue={5} color="red" onChange={(e) => setRate(e)} />
 
             <Box sx={{ display: "flex", gap: 3 }}>
@@ -86,8 +85,7 @@ const Comment = ({ comments = [], company }) => {
           </Box>
         </Box>
       )}
-
-      <Box px={2}>
+      <Box>
         {comments.map((comment) => (
           <Box key={comment._id}>
             <Box

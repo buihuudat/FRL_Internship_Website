@@ -19,6 +19,7 @@ import PayPalThank from "./pages/PayPalThank";
 import Custom from "./pages/admin/Custom";
 import SendEmail from "./pages/Company/SendEmail";
 import JobsApplied from "./pages/JobsApplied";
+import Search from "./pages/Search";
 
 export const router = createBrowserRouter([
   {
@@ -33,6 +34,10 @@ export const router = createBrowserRouter([
       {
         path: "/:id",
         element: <Home />,
+      },
+      {
+        path: "/search",
+        element: <Search />,
       },
       {
         path: "/cau-hoi-thuong-gap",

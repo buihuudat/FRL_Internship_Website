@@ -3,10 +3,12 @@ import FacebookIcon from "@mui/icons-material/Facebook";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import YouTubeIcon from "@mui/icons-material/YouTube";
 
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const Footer = () => {
   const navigate = useNavigate();
+  const { pathname } = useLocation();
+  if (pathname === "/search") return;
   return (
     <Box
       sx={{

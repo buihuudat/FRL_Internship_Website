@@ -34,7 +34,7 @@ const TrickNav = () => {
         style={{
           transform: `translateX(${position}%)`,
           color: "white",
-          fontFamily: "cursive",
+          // fontFamily: "cursive",
         }}
       >
         {text}

@@ -12,7 +12,6 @@ import PhoneIcon from "@mui/icons-material/Phone";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import PersonIcon from "@mui/icons-material/Person";
 import CardGiftcardIcon from "@mui/icons-material/CardGiftcard";
-import SocialDistanceIcon from "@mui/icons-material/SocialDistance";
 import BorderColorIcon from "@mui/icons-material/BorderColor";
 import { setModal, setSkillModal } from "../../slice/userSlice";
 import ProfileModal from "../../components/ProfileModal";
@@ -133,8 +132,8 @@ const Profile = () => {
               <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                 <LocationOnIcon color="error" sx={{ width: 30, height: 30 }} />
                 <Typography>
-                  {address(user?.address)?.length > 50
-                    ? address(user?.address).slice(0, 50) + "..."
+                  {address(user?.address)?.length > 40
+                    ? address(user?.address).slice(0, 40) + "..."
                     : address(user?.address)}
                 </Typography>
               </Box>
@@ -142,7 +141,9 @@ const Profile = () => {
             <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
               <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                 <PersonIcon color="error" sx={{ width: 30, height: 30 }} />
-                <Typography>{user?.gender}</Typography>
+                <Typography>
+                  {user?.gender === "male" ? "Nam" : "Nữ"}
+                </Typography>
               </Box>
               <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                 <CardGiftcardIcon

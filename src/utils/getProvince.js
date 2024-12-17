@@ -2,8 +2,12 @@ import axios from "axios";
 const host = "https://vapi.vnappmob.com";
 
 export const getProvinces = async () => {
-  const res = await axios.get(`${host}/api/province`);
-  if (res && res.data) return res.data;
+  // const res = await axios.get(`${host}/api/province`);
+  fetch(`${host}/api/province`)
+    .then((res) => res.json())
+    .then((res) => console.log(res.data));
+  // console.log(res);
+  // if (res && res.data) return res.data;
   return [];
 };
 

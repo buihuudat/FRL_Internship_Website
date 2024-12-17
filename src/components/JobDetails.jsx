@@ -60,7 +60,7 @@ const JobDetails = () => {
       setJobApplied(data);
     };
     fetchData();
-  }, [jobSelected._id]);
+  }, [jobSelected]);
 
   useEffect(() => {
     if (jobSelected.company && jobSelected.company.address) {
@@ -79,12 +79,11 @@ const JobDetails = () => {
     }
   }, [jobSelected, user, modal]);
 
-  const isApplied =
-    useMemo(() => {
-      const thisJob = jobApplied.find((j) => j.user?._id === user?._id);
-      if (!thisJob) return false;
-      return true;
-    }, [jobApplied, user?._id]) || null;
+  const isApplied = useMemo(() => {
+    const thisJob = jobApplied.find((j) => j.user?._id === user?._id);
+    if (!thisJob) return false;
+    return true;
+  }, [jobApplied, user?._id]);
 
   const handleApply = () => {
     if (!user) return toast.error("Bạn chưa đăng nhập");
@@ -112,7 +111,7 @@ const JobDetails = () => {
           onClick={() => navigate(`/company/${jobSelected.company._id}`)}
           variant="square"
           alt="img-company"
-          sx={{ width: 100, height: 100, cursor: "pointer" }}
+          sx={{ width: 100, height: 100, cursor: "pointer", borderRadius: 3 }}
           src={jobSelected.company?.image}
         />
         <Box ml={2}>
@@ -145,11 +144,15 @@ const JobDetails = () => {
         variant="contained"
         color="error"
         fullWidth
-        sx={{ p: 1, fontSize: 25, borderRadius: 5, mt: 4 }}
+        sx={{ p: 1, fontSize: 20, borderRadius: 5, mt: 4 }}
         onClick={handleApply}
-        disabled={isApplied === true || isApplied === null}
+        disabled={isApplied === true}
       >
-        {isApplied === true ? "Bạn đã ứng tuyển" : "  Ứng tuyển"}
+        {!user
+          ? "Đăng nhập để ứng tuyển"
+          : isApplied === true
+          ? "Bạn đã ứng tuyển"
+          : "  Ứng tuyển"}
       </Button>
 
       <Divider sx={{ height: 2, py: 2 }} />
@@ -266,10 +269,10 @@ const JobDetails = () => {
             Thông tin chi tiết
           </Typography>
           <Typography>
-            {!showFull
+            {showFull
               ? jobSelected?.jobDescription
-              : jobSelected?.jobDescription?.slice(0, 200) + "..."}
-            {jobSelected?.jobDescription.length > 200 ? (
+              : jobSelected?.jobDescription?.slice(0, 180) + "..."}
+            {jobSelected?.jobDescription.length > 180 ? (
               <a
                 onClick={() => setShowFull(!showFull)}
                 style={{

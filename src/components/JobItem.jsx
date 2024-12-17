@@ -121,10 +121,6 @@ const JobItem = (job) => {
           backgroundColor: "white",
         }}
       >
-        <Typography sx={{ fontSize: 20, fontWeight: "600", height: 60 }}>
-          {job.jobTitle}
-        </Typography>
-
         <Box
           sx={{ display: "flex", flexDirection: "row", alignItems: "center" }}
         >
@@ -132,12 +128,22 @@ const JobItem = (job) => {
             src={company?.image}
             variant="square"
             onClick={handleViewCompany}
-            style={{ cursor: "pointer" }}
+            style={{ cursor: "pointer", borderRadius: 3 }}
           />
-          <Typography fontSize={25} pl={2}>
+          <Typography fontSize={25} pl={2} textTransform={"capitalize"}>
             {company?.name}
           </Typography>
         </Box>
+
+        <Typography
+          sx={{ fontSize: 20, fontWeight: "600", mt: 3 }}
+          textTransform={"capitalize"}
+        >
+          {/* {job.jobTitle?.length > 40
+            ? job.jobTitle.slice(0, 40) + "..."
+            : job.jobTitle} */}
+          {job.jobTitle}
+        </Typography>
         <Divider />
         <Box
           sx={{
@@ -168,7 +174,11 @@ const JobItem = (job) => {
             }}
           >
             <ApartmentIcon color="primary" />
-            <Typography fontWeight={600}>{address(job.jobLocation)}</Typography>
+            <Typography fontWeight={600}>
+              {address(job.jobLocation)?.length > 40
+                ? address(job.jobLocation).slice(0, 40) + "..."
+                : address(job.jobLocation)}
+            </Typography>
           </Box>
           <Box
             sx={{
@@ -213,11 +223,20 @@ const JobItem = (job) => {
           }}
         >
           <Box display={"flex"} justifyContent={"space-between"}>
-            <Button variant="outlined" color="error" onClick={handleDelete}>
-              Delete
+            <Button
+              variant="outlined"
+              color="error"
+              onClick={handleDelete}
+              sx={{ width: "45%" }}
+            >
+              Xoá
             </Button>
-            <Button variant="contained" onClick={handleUpdate}>
-              Update
+            <Button
+              variant="contained"
+              onClick={handleUpdate}
+              sx={{ width: "45%" }}
+            >
+              Cập nhật
             </Button>
           </Box>
           {isLoading ? (
@@ -228,6 +247,7 @@ const JobItem = (job) => {
               variant="outlined"
               color="success"
               onClick={handleViewUserApplied}
+              sx={{ borderRadius: "50px" }}
             >
               View {jobApplied.length} User Applied
             </Button>

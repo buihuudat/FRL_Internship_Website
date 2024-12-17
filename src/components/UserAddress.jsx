@@ -8,7 +8,7 @@ import {
   TextField,
 } from "@mui/material";
 import { useEffect, useState } from "react";
-import { getDistricts, getProvinces, getWards } from "../utils/getProvince";
+import { PROVINCE_DATA } from "../sources/data";
 
 const UserAddress = ({ user, setUser }) => {
   const [provinces, setProvinces] = useState([]);
@@ -17,40 +17,29 @@ const UserAddress = ({ user, setUser }) => {
   const [address, setAddress] = useState(null);
 
   useEffect(() => {
-    getProvinces().then((data) => {
-      setProvinces(data.results);
-    });
-    if (address?.province_id) {
-      getDistricts(address.province_id).then((districtData) => {
-        setDistricts(districtData.results);
-      });
-    }
-    if (address?.district_id) {
-      getWards(address.district_id).then((wardData) => {
-        setWards(wardData.results);
-      });
-    }
-  }, [address]);
-
-  useEffect(() => {
-    if (user?.address && address) {
-      const province = provinces.find(
-        (p) => p.province_id === address.province_id
-      )?.province_name;
-      const district = districts.find(
-        (d) => d.district_id === address.district_id
-      )?.district_name;
+    !provinces?.length && setProvinces(PROVINCE_DATA);
+    if (address?.province_id?.districts?.length) {
+      setDistricts(address?.province_id?.districts);
 
       setUser((prev) => ({
         ...prev,
         address: {
           ...prev.address,
-          province: province || prev.address.province,
-          district: district || prev.address.district,
+          province: address?.province_id?.name || prev.address.province,
         },
       }));
     }
-  }, [address, provinces, districts, wards]);
+    if (address?.district_id?.wards?.length) {
+      setWards(address?.district_id?.wards);
+      setUser((prev) => ({
+        ...prev,
+        address: {
+          ...prev.address,
+          district: address?.district_id?.name || prev.address.district,
+        },
+      }));
+    }
+  }, [address, provinces?.length]);
 
   return provinces?.length ? (
     <Box
@@ -63,48 +52,48 @@ const UserAddress = ({ user, setUser }) => {
       }}
     >
       <FormControl sx={{ width: "45%" }}>
-        <InputLabel>Province</InputLabel>
+        <InputLabel>Tỉnh thành</InputLabel>
         <Select
           defaultValue={user?.address?.province}
-          label="Province"
+          label="Tỉnh thành"
           onChange={(e) => {
             setAddress((prev) => ({
               ...prev,
-              province_id: e.target.value,
+              province_id: JSON.parse(e.target.value),
             }));
           }}
         >
           {provinces.map((province) => (
-            <MenuItem key={province?.province_id} value={province?.province_id}>
-              {province?.province_name}
+            <MenuItem key={province?.code} value={JSON.stringify(province)}>
+              {province?.name}
             </MenuItem>
           ))}
         </Select>
       </FormControl>
       <FormControl sx={{ width: "45%" }}>
-        <InputLabel>District</InputLabel>
+        <InputLabel>Quận huyện</InputLabel>
         <Select
           defaultValue={user?.address?.district}
-          label="District"
+          label="Quận huyện"
           onChange={(e) => {
             setAddress((prev) => ({
               ...prev,
-              district_id: e.target.value,
+              district_id: JSON.parse(e.target.value),
             }));
           }}
         >
           {districts.map((district) => (
-            <MenuItem key={district?.district_id} value={district?.district_id}>
-              {district?.district_name}
+            <MenuItem key={district?.code} value={JSON.stringify(district)}>
+              {district?.name}
             </MenuItem>
           ))}
         </Select>
       </FormControl>
       <FormControl sx={{ width: "45%" }}>
-        <InputLabel>Ward</InputLabel>
+        <InputLabel>Phường xã</InputLabel>
         <Select
           defaultValue={user?.address?.ward}
-          label="Ward"
+          label="Phường xã"
           onChange={(e) => {
             setUser((prev) => ({
               ...prev,
@@ -116,16 +105,16 @@ const UserAddress = ({ user, setUser }) => {
           }}
         >
           {wards.map((ward) => (
-            <MenuItem key={ward?.ward_id} value={ward?.ward_name}>
-              {ward?.ward_name}
+            <MenuItem key={ward?.ward_id} value={ward?.name}>
+              {ward?.name}
             </MenuItem>
           ))}
         </Select>
       </FormControl>
 
       <TextField
-        label="Street"
-        name="street"
+        label="Đường"
+        name="Đường"
         sx={{ width: "45%" }}
         defaultValue={user?.address?.street}
         onChange={(e) =>

@@ -92,25 +92,22 @@ const CompanyModal = () => {
       ot: value ? "Có tăng ca" : "Không tăng ca",
     };
 
+    const reqFunc = dataUpdate
+      ? companyApi.updateCompany({ id: dataUpdate._id, company: data })
+      : companyApi.createCompany(data);
+
     toast
-      .promise(
-        dataUpdate
-          ? companyApi.updateCompany({ id: dataUpdate._id, company: data })
-          : companyApi.createCompany(data),
-        {
-          loading: dataUpdate ? "Đang lưu..." : "Đang tạo ...",
-          success: dataUpdate ? "Lưu thành công" : "Tạo thành công",
-          error: dataUpdate ? "Lưu thất bại" : "Tạo thất bại",
-        }
-      )
+      .promise(reqFunc, {
+        loading: dataUpdate ? "Đang lưu..." : "Đang tạo ...",
+        success: dataUpdate ? "Lưu thành công" : "Tạo thành công",
+        error: dataUpdate ? "Lưu thất bại" : "Tạo thất bại",
+      })
       .then(() => handleClose());
   };
   const handleDone = (e) => {
     if (!e.type.includes("image")) return toast.error("Ảnh không hợp lệ");
     setImage(e.base64);
   };
-
-  console.log(dataUpdate);
 
   return (
     <Modal
@@ -221,7 +218,7 @@ const CompanyModal = () => {
 
           <Box sx={{ display: "flex", flexDirection: "row", gap: 2, pt: 2 }}>
             <Button variant="contained" color="success" fullWidth type="submit">
-              Save
+              Lưu
             </Button>
             <Button
               variant="contained"

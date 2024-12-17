@@ -15,7 +15,10 @@ import { useSelector } from "react-redux";
 import { getCurrentAddress } from "../../actions/getCurrentAddress";
 import { userApi } from "../../utils/api/userApi";
 import toast from "react-hot-toast";
+import { FaSearch } from "react-icons/fa";
 import { address } from "../../actions/userAddress";
+import aiImg from "../../assets/images/__.gif";
+import { useNavigate } from "react-router-dom";
 
 const SelectActions = ({
   name,
@@ -28,11 +31,20 @@ const SelectActions = ({
     <FormControl
       sx={{
         background: "white",
-        width: "30%",
+        width: "32%",
         borderRadius: 2,
       }}
     >
-      <InputLabel>{name}</InputLabel>
+      <InputLabel
+        style={{
+          color: "red",
+          borderColor: "red",
+          outline: "red",
+          fontWeight: "bold",
+        }}
+      >
+        {name}
+      </InputLabel>
       <Select
         value={dataFilter[keyName]}
         label={name}
@@ -62,6 +74,7 @@ const Filter = ({
 }) => {
   const searchHistory = JSON.parse(localStorage.getItem("search")) ?? [];
   const user = useSelector((state) => state.user.user);
+  const navigate = useNavigate();
 
   const handleGetCurrentAddress = () => {
     if (!user) return;
@@ -156,6 +169,28 @@ const Filter = ({
             value={searchQuery}
             fullWidth
           />
+          <Button
+            style={{
+              background: `url(${aiImg}) center center no-repeat`,
+              backgroundSize: "cover",
+              backgroundRepeat: "no-repeat",
+              position: "absolute",
+              right: 10,
+              top: -4,
+              padding: "5px 10px",
+              transform: "translateY(50%)",
+              borderRadius: "20px",
+              zIndex: 10,
+              border: "none",
+              color: "white",
+              fontSize: 13,
+              fontWeight: 600,
+              boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
+            }}
+            onClick={() => navigate("/search")}
+          >
+            Sử dụng AI
+          </Button>
           {searchHistory?.length && searchQuery !== "" ? (
             <Box
               sx={{
@@ -230,7 +265,8 @@ const Filter = ({
           background: "red",
           height: "max-content",
           borderRadius: 5,
-          padding: 1,
+          gap: 1,
+          padding: "5px 15px",
           mt: "auto",
           alignItems: "center",
           ":hover": {
@@ -239,10 +275,10 @@ const Filter = ({
         }}
         onClick={handleSearch}
       >
-        <LocationOnIcon sx={{ color: "white" }} />
         <Typography color={"white"} fontWeight={600} fontSize={20}>
           Tìm kiếm
         </Typography>
+        <FaSearch size={20} color="white" />
       </Button>
     </Box>
   );

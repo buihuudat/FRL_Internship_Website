@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import { Box, Divider, TextField, Typography } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
+import { useLocation } from "react-router-dom";
 import SendIcon from "@mui/icons-material/Send";
 
 import MessageItem from "./MessageItem";
-import { dataMessage } from "./data";
 import { useDispatch, useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import { messageApi } from "../../../../utils/api/messageApi";
@@ -13,17 +13,22 @@ import { setAiChat } from "../../../../slice/messageSlice";
 const Chat = () => {
   const [message, setMessage] = useState("");
   const [messageData, setMessageData] = useState([]);
-  const messagesEndRef = useRef(null);
   const [isLoading, setIsLoading] = useState(false);
   const user = useSelector((state) => state.user.user);
 
+  const { pathname } = useLocation();
   const dispatch = useDispatch();
+  const messagesEndRef = useRef(null);
 
   const {
     user: data,
     userChat,
     aiChat,
   } = useSelector((state) => state.messages);
+
+  useEffect(() => {
+    handleSend();
+  }, []);
 
   useEffect(() => {
     const chatContainer = messagesEndRef.current;
@@ -39,18 +44,27 @@ const Chat = () => {
   }, [userChat, isLoading]);
 
   const handleSend = async () => {
-    if (!message) return;
+    const searchQuery = window.sessionStorage.getItem("searchQuery");
+    const content = message || searchQuery;
+    window.sessionStorage.removeItem("searchQuery");
+
+    if (!content) return;
+    if (!user) return toast.error("Bạn cần phải đăng nhập trước");
+
     setIsLoading(true);
     setMessage("");
     dispatch(
       setAiChat({
         fromSelf: true,
-        message: message,
+        message: content,
       })
     );
     if (data.user._id === "AI") {
       try {
-        const result = await messageApi.ask({ userId: user._id, message });
+        const result = await messageApi.ask({
+          userId: user._id,
+          message: content,
+        });
         setMessageData((prev) => [result, ...prev]);
         dispatch(setAiChat(result));
       } catch (error) {
@@ -62,24 +76,26 @@ const Chat = () => {
         );
       }
     } else {
-      if (!user) return toast.error("Bạn cần phải đăng nhập trước");
-
-      const data = {
+      const newData = {
         user,
         from: user?._id,
         to: data.user._id,
         message: {
-          text: message,
+          text: content,
         },
       };
-      const result = await messageApi.send(data);
+      await messageApi.send(newData);
     }
     setIsLoading(false);
   };
 
   return (
     <Box pl={2} display={"flex"} flexDirection={"column"} height={"100%"}>
-      <Box>
+      <Box
+        sx={{
+          display: pathname === "/search" ? "none" : "block",
+        }}
+      >
         <Box
           display={"flex"}
           flexDirection={"row"}
@@ -97,7 +113,7 @@ const Chat = () => {
         ))}
         <div ref={messagesEndRef} />
       </Box>
-      {data.user._id === "AI" && (
+      {/* {data.user._id === "AI" && (
         <Box display={"flex"} flexWrap={"wrap"} gap={1}>
           {dataMessage.map((mess, i) => (
             <Typography
@@ -118,14 +134,15 @@ const Chat = () => {
             </Typography>
           ))}
         </Box>
-      )}
-      <Box sx={{ mt: "auto", width: "100%", display: "flex" }}>
+      )} */}
+      <Box sx={{ mt: "auto", width: "100%", display: "flex", color: "white" }}>
         <TextField
           onChange={(e) => setMessage(e.target.value)}
           fullWidth
           value={message}
           label="Đặt câu hỏi..."
           variant="filled"
+          sx={{ input: { color: "white" } }}
           onKeyDown={(e) => {
             if (e.key === "Enter") handleSend();
           }}

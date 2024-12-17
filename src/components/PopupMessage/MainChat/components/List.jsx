@@ -10,7 +10,6 @@ const ListItem = (data) => {
   const handleSelect = () => {
     dispatch(selectUser(data));
   };
-
   return (
     <Box sx={{ cursor: "pointer" }} onClick={handleSelect}>
       <Box

@@ -1,5 +1,5 @@
 import { Box, LinearProgress } from "@mui/material";
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import Navbar from "../navbar/Navbar";
 import Footer from "../footer/Footer";
 import { useDispatch, useSelector } from "react-redux";
@@ -15,6 +15,7 @@ import { setCompanyAuthor } from "../../slice/companySlice";
 const AppLayout = () => {
   const [isLoading, setIsLoading] = useState(true);
   const dispatch = useDispatch();
+  const { pathname } = useLocation();
 
   const user = useSelector((state) => state.user.user);
 
@@ -51,7 +52,7 @@ const AppLayout = () => {
       <Navbar />
       <Box pt={10}>
         <Outlet />
-        {user ? (
+        {user && pathname !== "/search" ? (
           <Box sx={{ position: "relative", width: "100%", height: "100%" }}>
             <PopupMessage />
           </Box>

@@ -21,6 +21,7 @@ import toast from "react-hot-toast";
 import { address } from "../actions/userAddress";
 import { jobApi } from "../utils/api/jobApi";
 import CompanyAddress from "./CompanyAddress";
+import { setJobs } from "../slice/jobSlice";
 
 const style = {
   position: "absolute",
@@ -105,6 +106,10 @@ const JobModal = () => {
         }
       )
       .then(() => {
+        jobApi.getJobsByRoot().then((jobs) => {
+          // return console.log(res);
+          dispatch(setJobs(jobs));
+        });
         handleClose();
       });
   };
@@ -255,7 +260,7 @@ const JobModal = () => {
 
         <Box sx={{ display: "flex", flexDirection: "column", gap: 2, pt: 2 }}>
           <Button variant="contained" color="success" fullWidth type="submit">
-            Save
+            Lưu
           </Button>
           <Button
             variant="contained"

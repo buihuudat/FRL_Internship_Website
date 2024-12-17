@@ -110,7 +110,7 @@ const ApplyModal = () => {
       >
         <Box sx={style}>
           <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-            <Typography fontWeight={600} fontSize={25}>
+            <Typography fontWeight={600} fontSize={20}>
               {data?.company?.name}
             </Typography>
             <TextField
@@ -120,7 +120,7 @@ const ApplyModal = () => {
               value={nameOfUser}
               onChange={(e) => setNameOfUser(e.target.value)}
             />
-            <Typography fontWeight={600} fontSize={25}>
+            <Typography fontWeight={600} fontSize={20}>
               CV Ứng tuyển
             </Typography>
             <FormControl>
@@ -144,7 +144,12 @@ const ApplyModal = () => {
                 </Box>
 
                 <Box
-                  sx={{ border: "2px solid #ddd", padding: 1, borderRadius: 2 }}
+                  sx={{
+                    border: "2px solid #ddd",
+                    padding: 1,
+                    borderRadius: 2,
+                    mt: 1,
+                  }}
                 >
                   <FormControlLabel
                     value="Tải lên CV mới"
@@ -160,7 +165,7 @@ const ApplyModal = () => {
               </RadioGroup>
             </FormControl>
 
-            <Typography fontSize={25} fontWeight={600}>
+            <Typography fontSize={20} fontWeight={600}>
               Thư xin thực tập{" "}
               <span style={{ fontWeight: 300, color: "#999" }}>
                 (Không bắt buộc)

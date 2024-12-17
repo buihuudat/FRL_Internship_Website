@@ -79,6 +79,7 @@ const Navbar = () => {
         justifyContent: "space-between",
         pt: 1,
         px: 10,
+        py: 1,
         position: "fixed",
         background: `linear-gradient(to right, black, #540509)`,
         width: "100%",

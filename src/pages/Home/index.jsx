@@ -12,7 +12,7 @@ import image2 from "../../assets/images/img2.jpg";
 import image3 from "../../assets/images/img3.jpg";
 import imgJobNotFound from "../../assets/images/nofound.jpg";
 import { jobApi } from "../../utils/api/jobApi";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const Home = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -20,11 +20,13 @@ const Home = () => {
   const [jobs, setJobs] = useState([]);
 
   const navigate = useNavigate();
+  const { pathname } = useLocation();
 
   useEffect(() => {
     const getJobs = async () => {
       const rs = await jobApi.getJobs();
       setJobs(rs);
+      dispatch(setJobsResult(pathname === "/" ? [] : rs));
     };
     getJobs();
   }, []);

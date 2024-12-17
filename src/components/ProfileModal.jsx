@@ -22,6 +22,8 @@ import UserAddress from "./UserAddress";
 import { useNavigate } from "react-router-dom";
 import { userApi } from "../utils/api/userApi";
 import { setUser as setUserState } from "../slice/userSlice";
+import { address } from "../actions/userAddress";
+import { getGeocoding } from "../actions/getGeocoding";
 
 const style = {
   position: "absolute",
@@ -62,14 +64,23 @@ const ProfileModal = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    let latLon = {
+      lat: null,
+      lng: null,
+    };
     const formData = new FormData(e.target);
+    await getGeocoding(address(user.address)).then((res) => {
+      latLon.lat = res?.lat;
+      latLon.lng = res?.lon;
+    });
+
     const data = {
       _id: user._id,
       username: user.username,
       name: formData.get("name") || user.name,
       email: formData.get("email") || user.email,
       phone: formData.get("phone") || user.phone,
-      address: user.address,
+      address: { ...user.address, ...latLon },
       birthday: formData.get("birthday") || user.birthday,
       description: formData.get("description") || user.description,
       social: formData.get("social") || user.social,
